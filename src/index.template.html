@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#b71c1c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AWAU 中文">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>AWAU 中文 · Pronunciación</title>
+<style>
+:root{
+  --bg:#f6f4f1; --card:#ffffff; --card2:#faf8f5; --ink:#1c1917; --muted:#6b645c; --line:#e7e2db;
+  --accent:#b71c1c; --accent-ink:#ffffff; --accent-soft:#fbe9e7;
+  --ok:#2e7d32; --ok-bg:#e8f5e9; --homo:#a16207; --homo-bg:#fef9c3; --bad:#c62828; --bad-bg:#ffebee;
+  --miss:#78716c; --miss-bg:#f0eeeb; --extra:#6d28d9; --extra-bg:#f3e8ff;
+  --t1:#d32f2f; --t2:#2e7d32; --t3:#1565c0; --t4:#7b1fa2; --t5:#757575;
+  --radius:18px; --shadow:0 1px 2px rgba(28,25,23,.06),0 8px 24px -12px rgba(28,25,23,.18);
+  --zh:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+  --ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#141210; --card:#1f1c19; --card2:#26221e; --ink:#f3efe9; --muted:#a8a097; --line:#36312b;
+    --accent:#ef5350; --accent-ink:#1a0505; --accent-soft:#3a1d1b;
+    --ok:#81c784; --ok-bg:#1d2e1f; --homo:#facc15; --homo-bg:#33300f; --bad:#ef9a9a; --bad-bg:#3b1c1c;
+    --miss:#a8a29e; --miss-bg:#2a2724; --extra:#c4b5fd; --extra-bg:#2c2240;
+    --t1:#ef6c6c; --t2:#7bc47f; --t3:#64a8f0; --t4:#c58ad6; --t5:#9e9e9e;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);-webkit-text-size-adjust:100%}
+body{padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 24px)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px}
+
+header{padding:18px 0 10px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.brand{display:flex;align-items:center;gap:10px;flex:1 1 auto;min-width:0}
+.seal{width:38px;height:38px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--zh);font-weight:700;font-size:22px;flex:none}
+.brand h1{font-size:18px;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
+.brand small{display:block;color:var(--muted);font-size:13px;font-weight:500}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12px;padding:5px 9px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,var(--line))}
+.chip.warn{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 35%,var(--line))}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:12px 0}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 12px;font-weight:700}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1 1 auto;min-width:0}
+
+select,input[type=text],textarea{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px;width:100%}
+select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 12px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:32px}
+textarea{resize:vertical;line-height:1.6}
+textarea.zh{font-family:var(--zh);font-size:20px;min-height:120px}
+textarea.py{font-size:15px;min-height:110px}
+label.lbl{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px;font-weight:600}
+
+.btn{border:1px solid var(--line);background:var(--card2);border-radius:12px;padding:10px 14px;font-size:15px;font-weight:600;display:inline-flex;align-items:center;gap:8px;justify-content:center;min-height:44px}
+.btn:active{transform:scale(.98)}
+.btn.icon{width:44px;padding:0}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.big{min-height:56px;font-size:17px;border-radius:16px;flex:1 1 200px}
+.btn.rec{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.rec.on{animation:pulse 1.3s infinite}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}70%{box-shadow:0 0 0 14px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.btn svg{width:20px;height:20px;flex:none}
+
+.seg{display:inline-flex;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:7px 11px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted);min-height:36px}
+.seg.wide{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;width:100%}
+.seg.wide button{padding:8px 6px;font-size:13px;line-height:1.25}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+.toggles{display:flex;gap:16px;flex-wrap:wrap;margin:4px 0 10px}
+.tg{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--muted);user-select:none}
+.tg input{appearance:none;-webkit-appearance:none;width:42px;height:26px;border-radius:999px;background:var(--line);position:relative;margin:0;transition:background .15s}
+.tg input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.tg input:checked{background:var(--accent)}
+.tg input:checked::after{transform:translateX(16px)}
+
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:8px}
+.legend b{font-weight:700}
+.legend .t1{color:var(--t1)}.legend .t2{color:var(--t2)}.legend .t3{color:var(--t3)}.legend .t4{color:var(--t4)}.legend .t5{color:var(--t5)}
+
+/* Texto con pinyin */
+.reader{font-family:var(--zh)}
+.sent{position:relative;padding:10px 10px 10px 38px;border-radius:14px;border:1px solid transparent;margin:2px 0;cursor:pointer;line-height:2.5;font-size:24px}
+.sent:hover{background:var(--card2)}
+.sent.sel{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+.sent .n{position:absolute;left:8px;top:16px;font-family:var(--ui);font-size:12px;font-weight:700;color:var(--muted);width:22px;text-align:center}
+ruby{ruby-position:over;margin:0 .02em}
+rt{font-family:var(--ui);font-size:.46em;font-weight:600;letter-spacing:-.01em;color:var(--t5)}
+.c-t1 rt{color:var(--t1)}.c-t2 rt{color:var(--t2)}.c-t3 rt{color:var(--t3)}.c-t4 rt{color:var(--t4)}.c-t5 rt{color:var(--t5)}
+.reader.no-tone rt{color:var(--muted)!important}
+.reader.no-py rt{display:none}
+.reader.no-py .sent{line-height:1.8}
+.reader.no-py.tone-chars .c-t1{color:var(--t1)}.reader.no-py.tone-chars .c-t2{color:var(--t2)}.reader.no-py.tone-chars .c-t3{color:var(--t3)}.reader.no-py.tone-chars .c-t4{color:var(--t4)}.reader.no-py.tone-chars .c-t5{color:var(--t5)}
+.lat{font-family:var(--ui);font-size:.75em;color:var(--muted)}
+
+.target{background:var(--card2);border:1px dashed var(--line);border-radius:14px;padding:10px 12px;font-family:var(--zh);font-size:20px;line-height:1.6;max-height:9.6em;overflow:auto}
+.target .meta{font-family:var(--ui);font-size:12px;color:var(--muted);font-weight:700;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:8px}
+
+.live{min-height:56px;border-radius:14px;background:var(--card2);border:1px solid var(--line);padding:10px 12px;font-family:var(--zh);font-size:20px;line-height:1.6;color:var(--ink)}
+.live .interim{color:var(--muted)}
+.live .ph{font-family:var(--ui);font-size:14px;color:var(--muted)}
+.meter{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:8px;display:none}
+.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .08s}
+
+/* Resultado */
+.score{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.ring{--p:0;width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--c,var(--ok)) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center;flex:none}
+.ring span{width:76px;height:76px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:24px;font-weight:800}
+.score .msg{flex:1 1 220px}
+.score .msg strong{display:block;font-size:18px;margin-bottom:2px}
+.score .msg small{color:var(--muted);font-size:13px;line-height:1.4;display:block}
+.cmp{font-family:var(--zh);font-size:24px;line-height:2.6;margin:12px 0 6px;word-break:break-all}
+.cmp ruby{border-radius:6px;padding:0 .08em}
+.cmp .ok{background:var(--ok-bg);color:var(--ok)}
+.cmp .homo{background:var(--homo-bg);color:var(--homo)}
+.cmp .sub{background:var(--bad-bg);color:var(--bad)}
+.cmp .del{background:var(--miss-bg);color:var(--miss);text-decoration:line-through;text-decoration-thickness:2px}
+.cmp .ins{background:var(--extra-bg);color:var(--extra);font-size:.7em;vertical-align:.25em}
+.cmp rt{color:inherit!important;opacity:.85}
+.cmp.no-py rt{display:none}
+.keys{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:10px}
+.keys span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--k)}
+.errs{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px}
+.errs li{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:14px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.errs .zh{font-family:var(--zh);font-size:19px}
+.errs .tag{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;border-radius:6px;padding:2px 6px}
+.heard{font-size:14px;color:var(--muted);margin-top:10px}
+.heard .zh{font-family:var(--zh);color:var(--ink);font-size:17px}
+
+.note{font-size:14px;line-height:1.5;border-radius:12px;padding:10px 12px;margin:10px 0 0}
+.note.err{background:var(--bad-bg);color:var(--bad)}
+.note.info{background:var(--card2);color:var(--muted);border:1px solid var(--line)}
+.note.okn{background:var(--ok-bg);color:var(--ok)}
+.hidden{display:none!important}
+.progress{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+details summary{cursor:pointer;font-weight:700;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"＋";color:var(--muted)}
+details[open] summary::after{content:"－"}
+.help{font-size:14px;line-height:1.55;color:var(--muted)}
+.help ol{padding-left:20px;margin:6px 0}
+.menu{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.menu .btn{font-size:14px;min-height:38px;padding:6px 12px}
+.count{font-size:13px;color:var(--muted);margin-top:6px}
+.count.bad{color:var(--bad);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="seal" aria-hidden="true">中</div>
+      <div><h1>Práctica de pronunciación</h1><small>AWAU · 普通话</small></div>
+    </div>
+    <div class="chips" aria-live="polite">
+      <span class="chip" id="chipNet">…</span>
+      <span class="chip" id="chipVoice">Voz china…</span>
+      <span class="chip" id="chipModel">Modo sin conexión: —</span>
+    </div>
+  </header>
+
+  <div id="globalErr" class="note err hidden" role="alert"></div>
+
+  <!-- TEXTO -->
+  <section class="card" aria-labelledby="hText">
+    <h2 id="hText">Texto</h2>
+    <div class="row">
+      <select id="textSel" class="grow" aria-label="Elegir texto"></select>
+      <button class="btn icon" id="btnNew" title="Nuevo texto" aria-label="Nuevo texto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+      <div class="seg" role="group" aria-label="Modo">
+        <button id="modeRead" aria-pressed="true">Leer</button>
+        <button id="modeEdit" aria-pressed="false">Editar</button>
+      </div>
+    </div>
+
+    <div id="readView">
+      <div class="toggles" style="margin-top:12px">
+        <label class="tg"><input type="checkbox" id="tgPy" checked> Pinyin</label>
+        <label class="tg"><input type="checkbox" id="tgTone" checked> Colores de tono</label>
+      </div>
+      <div class="legend" id="legend"><span class="t1"><b>mā</b> 1.º</span><span class="t2"><b>má</b> 2.º</span><span class="t3"><b>mǎ</b> 3.º</span><span class="t4"><b>mà</b> 4.º</span><span class="t5"><b>ma</b> neutro</span></div>
+      <div class="reader" id="reader" aria-label="Texto con pinyin. Toca una frase para practicarla."></div>
+      <p class="help" style="margin:8px 0 0">Toca una frase para practicarla sola. Vuelve a tocarla para practicar el texto completo.</p>
+    </div>
+
+    <div id="editView" class="hidden">
+      <label class="lbl" for="edTitle">Título</label>
+      <input type="text" id="edTitle" maxlength="80">
+      <label class="lbl" for="edZh">Texto en mandarín</label>
+      <textarea id="edZh" class="zh" lang="zh-CN" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+      <label class="lbl" for="edPy">Pinyin (una sílaba por carácter, separadas por espacios; puedes escribir <i>ma3</i> y se convierte en <i>mǎ</i>)</label>
+      <textarea id="edPy" class="py" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+      <div class="count" id="edCount"></div>
+      <div class="menu">
+        <button class="btn primary" id="edSave">Guardar</button>
+        <button class="btn" id="edCancel">Cancelar</button>
+        <button class="btn" id="edRegen" title="Vuelve a calcular el pinyin: conserva el de los caracteres que no has cambiado">Recalcular pinyin</button>
+      </div>
+      <details style="margin-top:14px">
+        <summary>Más opciones</summary>
+        <div class="menu">
+          <button class="btn" id="btnDup">Duplicar</button>
+          <button class="btn" id="btnDel">Borrar</button>
+          <button class="btn" id="btnRestore">Restaurar texto principal original</button>
+          <button class="btn" id="btnExport">Exportar textos</button>
+          <label class="btn" for="fileImport">Importar textos</label>
+          <input type="file" id="fileImport" accept="application/json,.json" class="hidden">
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- PRÁCTICA -->
+  <section class="card" aria-labelledby="hPrac">
+    <h2 id="hPrac">Práctica</h2>
+    <div class="target" id="target"></div>
+
+    <div class="row" style="margin-top:12px">
+      <button class="btn big" id="btnListen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg><span>Escuchar modelo</span></button>
+      <button class="btn big rec" id="btnRec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Grabar y comparar</span></button>
+    </div>
+    <div class="row" style="margin-top:10px;justify-content:space-between">
+      <div class="seg" role="group" aria-label="Velocidad del modelo">
+        <button data-rate="0.6">Lenta</button><button data-rate="0.8">Media</button><button data-rate="1">Normal</button>
+      </div>
+      <span class="help" id="engineLabel"></span>
+    </div>
+
+    <label class="lbl">Transcripción</label>
+    <div class="live" id="live" aria-live="polite"><span class="ph">Pulsa «Grabar y comparar» y lee el texto en voz alta.</span></div>
+    <div class="meter" id="meter"><i></i></div>
+    <div id="pracErr" class="note err hidden" role="alert"></div>
+  </section>
+
+  <!-- RESULTADO -->
+  <section class="card hidden" id="resultCard" aria-labelledby="hRes">
+    <h2 id="hRes">Resultado</h2>
+    <div class="score">
+      <div class="ring" id="ring"><span id="ringVal">0%</span></div>
+      <div class="msg"><strong id="resTitle"></strong><small id="resSub"></small></div>
+    </div>
+    <div class="keys">
+      <span style="--k:var(--ok)">Correcto</span>
+      <span style="--k:var(--homo)">Mismo sonido, otro carácter</span>
+      <span style="--k:var(--bad)">Fallado</span>
+      <span style="--k:var(--miss)">No se ha oído</span>
+      <span style="--k:var(--extra)">Sobra</span>
+    </div>
+    <div class="cmp" id="cmp"></div>
+    <ul class="errs" id="errs"></ul>
+    <div class="heard" id="heard"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn hidden" id="btnMine"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Escuchar mi voz</button>
+      <button class="btn" id="btnAgain">Repetir</button>
+      <button class="btn" id="btnNext">Siguiente frase →</button>
+    </div>
+  </section>
+
+  <!-- SIN CONEXIÓN / AJUSTES -->
+  <section class="card" aria-labelledby="hSet">
+    <h2 id="hSet">Reconocimiento y uso sin conexión</h2>
+    <label class="lbl">Motor de reconocimiento</label>
+    <div class="seg wide" role="group" aria-label="Motor de reconocimiento" id="engSeg">
+      <button data-eng="auto">Automático</button><button data-eng="browser">Navegador<br><small>con internet</small></button><button data-eng="whisper">Whisper<br><small>sin conexión</small></button>
+    </div>
+    <p class="help" style="margin:8px 0 0">Automático usa el reconocimiento del navegador cuando hay internet y Whisper cuando no hay.</p>
+
+    <label class="lbl">Modelo Whisper (se descarga una vez y queda en el dispositivo)</label>
+    <div class="seg wide" role="group" aria-label="Modelo Whisper" id="modelSeg">
+      <button data-model="onnx-community/whisper-tiny">Tiny · ~40 MB<br><small>rápido, menos preciso</small></button><button data-model="onnx-community/whisper-base">Base · ~80 MB<br><small>más preciso</small></button>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn primary" id="btnDownload">Descargar modelo para usar sin conexión</button>
+    </div>
+    <div class="progress hidden" id="dlBar"><i></i></div>
+    <div class="note info hidden" id="dlMsg"></div>
+
+    <details style="margin-top:16px">
+      <summary>Instalar en el iPhone o iPad</summary>
+      <div class="help">
+        <ol>
+          <li>Abre esta página en <b>Safari</b> con internet.</li>
+          <li>Pulsa <b>Compartir</b> → <b>Añadir a pantalla de inicio</b>.</li>
+          <li>Abre la app desde el icono y pulsa «Descargar modelo» (mejor con wifi).</li>
+          <li>Para la voz del modelo sin internet: Ajustes → Accesibilidad → Contenido leído → Voces → Chino (China continental) → descarga <b>Tingting</b> o <b>Lili</b>.</li>
+          <li>El reconocimiento del navegador necesita Siri y Dictado activados (Ajustes → General → Teclado → Activar Dictado).</li>
+        </ol>
+        <p>Los textos se guardan solo en este dispositivo. Usa «Exportar textos» para copiarlos a otro.</p>
+      </div>
+    </details>
+  </section>
+</div>
+
+<script>
+/*__PINYIN_PRO__*/
+</script>
+<script>
+/*__TEXTO_PRINCIPAL__*/
+</script>
+<script>
+(() => {
+'use strict';
+const $ = (id) => document.getElementById(id);
+const HAN = /\p{Script=Han}/u;
+const BREAKS = new Set(['。','！','？','!','?','；',';','\n']);
+const DEFAULT_SHORT = { id: 'saludo', title: 'Saludo corto', zh: '你好，很高兴认识你。', py: null };
+
+/* ---------- Almacenamiento seguro ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } },
+};
+const KEY_TEXTS = 'awau.textos.v1', KEY_PREFS = 'awau.prefs.v1', KEY_MODEL = 'awau.whisper.ready';
+
+/* ---------- Pinyin ---------- */
+const PP = window.pinyinPro;
+if (PP && PP.customPinyin) {
+  // Tonos neutros habituales que pinyin-pro no marca (para textos nuevos).
+  PP.customPinyin({
+    '名字':'míng zi','谢谢':'xiè xie','时候':'shí hou','晚上':'wǎn shang','位置':'wèi zhi','有空':'yǒu kòng',
+    '看看':'kàn kan','学过':'xué guo','做过':'zuò guo','上过':'shàng guo','去过':'qù guo','来过':'lái guo',
+    '看过':'kàn guo','吃过':'chī guo','听过':'tīng guo','见过':'jiàn guo','说过':'shuō guo','用过':'yòng guo',
+    '朋友':'péng you','喜欢':'xǐ huan','知道':'zhī dao','认识':'rèn shi','先生':'xiān sheng','东西':'dōng xi',
+    '意思':'yì si','衣服':'yī fu','漂亮':'piào liang','觉得':'jué de','妈妈':'mā ma','爸爸':'bà ba',
+    '哥哥':'gē ge','姐姐':'jiě jie','弟弟':'dì di','妹妹':'mèi mei','孩子':'hái zi','舒服':'shū fu',
+    '休息':'xiū xi','客气':'kè qi','清楚':'qīng chu','明白':'míng bai','地方':'dì fang','师傅':'shī fu',
+  });
+}
+function autoPy(zh) {
+  const chars = [...zh];
+  if (!PP) return chars.map(() => null);
+  let arr;
+  try { arr = PP.pinyin(zh, { type: 'all', toneSandhi: true }); } catch { return chars.map(() => null); }
+  if (arr.length !== chars.length) {
+    return chars.map((c) => (HAN.test(c) ? PP.pinyin(c) : null));
+  }
+  return arr.map((o, i) => (HAN.test(chars[i]) ? (o.pinyin || null) : null));
+}
+const MARKS = { 'ā':1,'ē':1,'ī':1,'ō':1,'ū':1,'ǖ':1,'á':2,'é':2,'í':2,'ó':2,'ú':2,'ǘ':2,'ǎ':3,'ě':3,'ǐ':3,'ǒ':3,'ǔ':3,'ǚ':3,'à':4,'è':4,'ì':4,'ò':4,'ù':4,'ǜ':4 };
+function toneOf(s) { if (!s) return 5; for (const ch of s.normalize('NFC')) if (MARKS[ch]) return MARKS[ch]; return 5; }
+function plain(s) { return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/ü|v/g, 'u'); }
+const TONE_TABLE = { a:'āáǎà', e:'ēéěè', i:'īíǐì', o:'ōóǒò', u:'ūúǔù', 'ü':'ǖǘǚǜ' };
+function numToMark(syl) {
+  const m = /^([a-züv:]+)([0-5])$/i.exec(syl);
+  if (!m) return syl;
+  let base = m[1].toLowerCase().replace(/v|u:/g, 'ü'); const t = +m[2];
+  if (t === 0 || t === 5) return base;
+  let idx = base.indexOf('a'); if (idx < 0) idx = base.indexOf('e');
+  if (idx < 0 && base.includes('ou')) idx = base.indexOf('o');
+  if (idx < 0) { for (let i = base.length - 1; i >= 0; i--) if ('aeiouü'.includes(base[i])) { idx = i; break; } }
+  if (idx < 0) return base;
+  return base.slice(0, idx) + TONE_TABLE[base[idx]][t - 1] + base.slice(idx + 1);
+}
+
+/* ---------- Textos ---------- */
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+function ensurePy(t) {
+  const chars = [...t.zh];
+  if (!Array.isArray(t.py) || t.py.length !== chars.length) t.py = autoPy(t.zh);
+  return t;
+}
+let state = store.get(KEY_TEXTS, null);
+if (!state || !Array.isArray(state.texts) || !state.texts.length) {
+  state = { texts: [clone(TEXTO_PRINCIPAL), clone(DEFAULT_SHORT)], currentId: 'principal' };
+}
+state.texts.forEach(ensurePy);
+const prefs = Object.assign({ showPy: true, showTone: true, rate: 0.8, engine: 'auto', model: 'onnx-community/whisper-base' }, store.get(KEY_PREFS, {}));
+function savePrefs() { store.set(KEY_PREFS, prefs); }
+function saveTexts() { if (!store.set(KEY_TEXTS, state)) showGlobal('No se han podido guardar los textos en este dispositivo (almacenamiento bloqueado o lleno).'); }
+function current() { return state.texts.find((t) => t.id === state.currentId) || state.texts[0]; }
+let selSentence = -1; // -1 = texto completo
+
+function sentencesOf(t) {
+  const chars = [...t.zh]; const out = []; let start = 0;
+  for (let i = 0; i <= chars.length; i++) {
+    if (i === chars.length || BREAKS.has(chars[i])) {
+      const end = i === chars.length || chars[i] === '\n' ? i : i + 1;
+      if (chars.slice(start, end).some((c) => HAN.test(c))) out.push({ start, end });
+      start = end; if (chars[i] === '\n') start = i + 1;
+    }
+  }
+  return out;
+}
+function targetRange() {
+  const t = current(); const s = sentencesOf(t);
+  if (selSentence >= 0 && s[selSentence]) return { ...s[selSentence], n: selSentence + 1, total: s.length };
+  return { start: 0, end: [...t.zh].length, n: 0, total: s.length };
+}
+function targetText() { const r = targetRange(); return [...current().zh].slice(r.start, r.end).join('').replace(/\n/g, ' ').trim(); }
+
+/* ---------- Render ---------- */
+function esc(s) { return s.replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+function rubyHtml(chars, py, from, to) {
+  let h = '', lat = '';
+  const flush = () => { if (lat) { h += `<span class="lat">${esc(lat)}</span>`; lat = ''; } };
+  for (let i = from; i < to; i++) {
+    const c = chars[i];
+    if (HAN.test(c)) { flush(); const p = py[i] || ''; h += `<ruby class="c-t${toneOf(p)}">${c}<rt>${esc(p)}</rt></ruby>`; }
+    else if (c === '\n') { flush(); }
+    else if (/[A-Za-z0-9 ]/.test(c)) lat += c;
+    else { flush(); h += esc(c); }
+  }
+  flush();
+  return h;
+}
+function renderSelect() {
+  $('textSel').innerHTML = state.texts.map((t) => `<option value="${esc(t.id)}">${esc(t.title || 'Sin título')}</option>`).join('');
+  $('textSel').value = current().id;
+}
+function renderReader() {
+  const t = current(); const chars = [...t.zh]; const ss = sentencesOf(t);
+  const r = $('reader');
+  r.classList.toggle('no-py', !prefs.showPy);
+  r.classList.toggle('no-tone', !prefs.showTone);
+  r.classList.toggle('tone-chars', prefs.showTone);
+  $('legend').classList.toggle('hidden', !prefs.showTone);
+  r.innerHTML = ss.map((s, i) => `<div class="sent${i === selSentence ? ' sel' : ''}" data-i="${i}" role="button" tabindex="0"><span class="n">${i + 1}</span>${rubyHtml(chars, t.py, s.start, s.end)}</div>`).join('') || '<p class="help">Este texto está vacío. Pulsa «Editar» para escribirlo.</p>';
+}
+function renderTarget() {
+  const t = current(); const r = targetRange(); const chars = [...t.zh];
+  const label = r.n ? `Frase ${r.n} de ${r.total}` : `Texto completo · ${r.total} frase${r.total === 1 ? '' : 's'}`;
+  $('target').innerHTML = `<div class="meta"><span>${label}</span>${r.n ? '<button class="btn" id="btnAll" style="min-height:30px;padding:2px 10px;font-size:12px">Ver todo</button>' : ''}</div>${esc(chars.slice(r.start, r.end).join('').replace(/\n/g, ' '))}`;
+  const b = $('btnAll'); if (b) b.onclick = () => { selSentence = -1; renderAll(); };
+  $('btnNext').classList.toggle('hidden', !(r.n && r.n < r.total));
+}
+function renderAll() { renderSelect(); renderReader(); renderTarget(); }
+
+$('reader').addEventListener('click', (e) => {
+  const el = e.target.closest('.sent'); if (!el) return;
+  const i = +el.dataset.i; selSentence = selSentence === i ? -1 : i; renderReader(); renderTarget();
+});
+$('reader').addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('sent')) { e.preventDefault(); e.target.click(); } });
+$('textSel').addEventListener('change', (e) => { state.currentId = e.target.value; selSentence = -1; saveTexts(); hideResult(); if (!$('editView').classList.contains('hidden')) openEditor(); renderAll(); });
+$('tgPy').checked = prefs.showPy; $('tgTone').checked = prefs.showTone;
+$('tgPy').addEventListener('change', (e) => { prefs.showPy = e.target.checked; savePrefs(); renderReader(); rerenderResult(); });
+$('tgTone').addEventListener('change', (e) => { prefs.showTone = e.target.checked; savePrefs(); renderReader(); });
+
+/* ---------- Editor ---------- */
+let pyDirty = false;
+function alignPy(oldZh, oldPy, newZh) {
+  const a = [...oldZh], b = [...newZh]; const n = a.length, m = b.length;
+  const auto = autoPy(newZh);
+  if (!n || !Array.isArray(oldPy)) return auto;
+  const dp = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const out = auto.slice(); let i = 0, j = 0;
+  while (i < n && j < m) {
+    if (a[i] === b[j]) { if (HAN.test(b[j]) && oldPy[i]) out[j] = oldPy[i]; i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) i++; else j++;
+  }
+  return out;
+}
+function pyToText(zh, py) {
+  const chars = [...zh]; const lines = [[]];
+  chars.forEach((c, i) => { if (c === '\n') lines.push([]); else if (HAN.test(c)) lines[lines.length - 1].push(py[i] || '?'); });
+  return lines.map((l) => l.join(' ')).join('\n');
+}
+function parsePy(text) { return text.split(/\s+/).filter(Boolean).map((s) => numToMark(s.replace(/[，。,.;；:：!！?？、]/g, ''))).filter(Boolean); }
+function updateCount() {
+  const han = [...$('edZh').value].filter((c) => HAN.test(c)).length; const syl = parsePy($('edPy').value).length;
+  const el = $('edCount'); el.textContent = `${han} caracteres · ${syl} sílabas` + (han === syl ? ' ✓' : ' · deben coincidir');
+  el.classList.toggle('bad', han !== syl); return han === syl;
+}
+function openEditor() {
+  const t = current();
+  $('edTitle').value = t.title || ''; $('edZh').value = t.zh; $('edPy').value = pyToText(t.zh, t.py); pyDirty = false; updateCount();
+  $('btnRestore').classList.toggle('hidden', t.id !== 'principal');
+}
+function setMode(edit) {
+  $('readView').classList.toggle('hidden', edit); $('editView').classList.toggle('hidden', !edit);
+  $('modeRead').setAttribute('aria-pressed', String(!edit)); $('modeEdit').setAttribute('aria-pressed', String(edit));
+  if (edit) openEditor();
+}
+$('modeRead').onclick = () => setMode(false);
+$('modeEdit').onclick = () => setMode(true);
+let edTimer;
+$('edZh').addEventListener('input', () => {
+  clearTimeout(edTimer);
+  edTimer = setTimeout(() => { if (!pyDirty) { const t = current(); $('edPy').value = pyToText($('edZh').value, alignPy(t.zh, t.py, $('edZh').value)); } updateCount(); }, 300);
+});
+$('edPy').addEventListener('input', () => { pyDirty = true; updateCount(); });
+$('edRegen').onclick = () => { const t = current(); pyDirty = false; $('edPy').value = pyToText($('edZh').value, alignPy(t.zh, t.py, $('edZh').value)); updateCount(); };
+$('edCancel').onclick = () => setMode(false);
+$('edSave').onclick = () => {
+  const zh = $('edZh').value.replace(/\r/g, '').trim();
+  if (!zh || ![...zh].some((c) => HAN.test(c))) { showGlobal('Escribe al menos un carácter chino.'); return; }
+  if (!updateCount()) { showGlobal('El número de sílabas de pinyin no coincide con el de caracteres. Pulsa «Recalcular pinyin» o corrígelo.'); return; }
+  const syl = parsePy($('edPy').value); const chars = [...zh]; let k = 0;
+  const t = current();
+  t.zh = zh; t.py = chars.map((c) => (HAN.test(c) ? syl[k++] : null)); t.title = $('edTitle').value.trim() || 'Sin título';
+  saveTexts(); hideGlobal(); selSentence = -1; setMode(false); hideResult(); renderAll();
+};
+$('btnNew').onclick = () => {
+  const t = ensurePy({ id: 't' + Date.now().toString(36), title: 'Texto nuevo', zh: DEFAULT_SHORT.zh, py: null });
+  state.texts.push(t); state.currentId = t.id; selSentence = -1; saveTexts(); renderAll(); setMode(true);
+  setTimeout(() => { $('edZh').focus(); $('edZh').select(); }, 50);
+};
+$('btnDup').onclick = () => { const t = clone(current()); t.id = 't' + Date.now().toString(36); t.title += ' (copia)'; state.texts.push(t); state.currentId = t.id; saveTexts(); renderAll(); openEditor(); };
+$('btnDel').onclick = () => {
+  if (state.texts.length <= 1) { showGlobal('Tiene que quedar al menos un texto.'); return; }
+  if (!confirm(`¿Borrar «${current().title}»?`)) return;
+  state.texts = state.texts.filter((t) => t.id !== state.currentId); state.currentId = state.texts[0].id; selSentence = -1; saveTexts(); setMode(false); renderAll();
+};
+$('btnRestore').onclick = () => {
+  if (!confirm('¿Restaurar el texto principal tal como venía en la app? Se perderán tus cambios en ese texto.')) return;
+  const i = state.texts.findIndex((t) => t.id === 'principal'); const fresh = clone(TEXTO_PRINCIPAL);
+  if (i >= 0) state.texts[i] = fresh; else state.texts.unshift(fresh);
+  state.currentId = 'principal'; saveTexts(); renderAll(); openEditor();
+};
+$('btnExport').onclick = () => {
+  const blob = new Blob([JSON.stringify({ app: 'awau-mandarin', version: 1, texts: state.texts }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'textos-mandarin.json'; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+$('fileImport').onchange = async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const data = JSON.parse(await f.text()); const list = Array.isArray(data) ? data : data.texts;
+    if (!Array.isArray(list)) throw new Error('formato');
+    let added = 0;
+    for (const t of list) {
+      if (!t || typeof t.zh !== 'string') continue;
+      const nt = ensurePy({ id: t.id || ('t' + Date.now().toString(36) + added), title: String(t.title || 'Importado'), zh: t.zh, py: t.py });
+      const i = state.texts.findIndex((x) => x.id === nt.id); if (i >= 0) state.texts[i] = nt; else state.texts.push(nt); added++;
+    }
+    saveTexts(); renderAll(); showGlobal(`Importados ${added} textos.`, true);
+  } catch { showGlobal('No se ha podido leer el archivo. Debe ser un .json exportado desde esta app.'); }
+  e.target.value = '';
+};
+
+/* ---------- Mensajes ---------- */
+function showGlobal(msg, ok) { const el = $('globalErr'); el.textContent = msg; el.className = 'note ' + (ok ? 'okn' : 'err'); clearTimeout(showGlobal.t); showGlobal.t = setTimeout(hideGlobal, 7000); }
+function hideGlobal() { $('globalErr').className = 'note err hidden'; }
+function pracError(msg) { const el = $('pracErr'); if (!msg) { el.classList.add('hidden'); return; } el.innerHTML = msg; el.classList.remove('hidden'); }
+
+/* ---------- Estado de conexión ---------- */
+function renderNet() {
+  const on = navigator.onLine; const c = $('chipNet');
+  c.textContent = on ? 'En línea' : 'Sin conexión'; c.className = 'chip ' + (on ? 'ok' : 'warn');
+  renderEngineLabel();
+}
+addEventListener('online', renderNet); addEventListener('offline', renderNet);
+function renderModelChip() {
+  const ready = store.get(KEY_MODEL, null); const c = $('chipModel');
+  c.textContent = ready ? 'Sin conexión: listo' : 'Sin conexión: falta modelo'; c.className = 'chip ' + (ready ? 'ok' : '');
+}
+
+/* ---------- Síntesis de voz (modelo) ---------- */
+const synth = window.speechSynthesis;
+let zhVoice = null;
+function pickVoice() {
+  if (!synth) return;
+  const vs = synth.getVoices();
+  const zh = vs.filter((v) => /^zh[-_](CN|Hans)/i.test(v.lang) || /^cmn/i.test(v.lang));
+  const pref = ['Tingting', 'Ting-Ting', 'Lili', 'Yu-shu', 'Xiaoxiao', 'Google 普通话', 'Meijia'];
+  zhVoice = zh.find((v) => pref.some((p) => v.name.includes(p)) && v.localService) || zh.find((v) => v.localService) || zh[0] || vs.find((v) => /^zh/i.test(v.lang)) || null;
+  const c = $('chipVoice');
+  c.textContent = zhVoice ? 'Voz china ✓' : 'Sin voz china'; c.className = 'chip ' + (zhVoice ? 'ok' : 'warn');
+}
+if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; setTimeout(pickVoice, 800); }
+else { $('chipVoice').textContent = 'Sin síntesis de voz'; $('chipVoice').className = 'chip warn'; }
+
+document.querySelectorAll('[data-rate]').forEach((b) => {
+  b.setAttribute('aria-pressed', String(+b.dataset.rate === prefs.rate));
+  b.onclick = () => { prefs.rate = +b.dataset.rate; savePrefs(); document.querySelectorAll('[data-rate]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); };
+});
+let speaking = false;
+$('btnListen').onclick = () => {
+  pracError('');
+  if (!synth) { pracError('Este navegador no permite leer texto en voz alta (Web Speech API · speechSynthesis).'); return; }
+  if (speaking) { synth.cancel(); return; }
+  const text = targetText(); if (!text) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN'; u.rate = prefs.rate; if (zhVoice) u.voice = zhVoice;
+  const lbl = $('btnListen').querySelector('span');
+  u.onstart = () => { speaking = true; lbl.textContent = 'Detener'; };
+  u.onend = u.onerror = (e) => {
+    speaking = false; lbl.textContent = 'Escuchar modelo';
+    if (e && e.type === 'error' && e.error !== 'interrupted' && e.error !== 'canceled') pracError('No se ha podido reproducir la voz (' + esc(String(e.error)) + '). Comprueba que tienes una voz china instalada.');
+  };
+  if (!zhVoice) pracError('No se ha encontrado una voz china en el dispositivo; puede que suene con otra voz. En iPhone: Ajustes → Accesibilidad → Contenido leído → Voces → Chino.');
+  synth.speak(u);
+};
+
+/* ---------- Reconocimiento ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function engineFor() {
+  const ready = !!store.get(KEY_MODEL, null);
+  if (prefs.engine === 'browser') return 'browser';
+  if (prefs.engine === 'whisper') return 'whisper';
+  if (navigator.onLine && SR) return 'browser';
+  if (ready) return 'whisper';
+  return SR ? 'browser' : 'whisper';
+}
+function renderEngineLabel() {
+  const e = engineFor();
+  $('engineLabel').textContent = e === 'browser' ? 'Reconoce: navegador (online)' : 'Reconoce: Whisper (en el dispositivo)';
+}
+document.querySelectorAll('[data-eng]').forEach((b) => {
+  b.setAttribute('aria-pressed', String(b.dataset.eng === prefs.engine));
+  b.onclick = () => { prefs.engine = b.dataset.eng; savePrefs(); document.querySelectorAll('[data-eng]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); renderEngineLabel(); };
+});
+document.querySelectorAll('[data-model]').forEach((b) => {
+  b.setAttribute('aria-pressed', String(b.dataset.model === prefs.model));
+  b.onclick = () => { prefs.model = b.dataset.model; savePrefs(); document.querySelectorAll('[data-model]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); renderDl(); };
+});
+
+let recState = 'idle'; // idle | rec | busy
+let finalText = '', interimText = '';
+let recog = null, stopRequested = false;
+let mediaRec = null, mediaStream = null, chunks = [], audioCtx = null, meterRAF = 0, recStart = 0, timerInt = 0;
+let lastAudioUrl = null;
+
+function setRecUI(st, label) {
+  recState = st; const b = $('btnRec'); const lbl = b.querySelector('span');
+  b.classList.toggle('on', st === 'rec'); b.disabled = st === 'busy';
+  lbl.textContent = label || (st === 'rec' ? 'Detener y comparar' : st === 'busy' ? 'Procesando…' : 'Grabar y comparar');
+  $('btnListen').disabled = st !== 'idle';
+}
+function showLive(placeholder) {
+  const el = $('live');
+  if (placeholder) { el.innerHTML = `<span class="ph">${placeholder}</span>`; return; }
+  el.innerHTML = esc(finalText) + (interimText ? `<span class="interim">${esc(interimText)}</span>` : '') || '<span class="ph">Escuchando…</span>';
+}
+
+$('btnRec').onclick = () => {
+  if (recState === 'rec') { stopRecording(); return; }
+  if (recState !== 'idle') return;
+  pracError(''); if (synth) synth.cancel();
+  if (location.protocol === 'file:') { pracError('El micrófono no funciona abriendo el archivo directamente. Abre la app desde su dirección <b>https://</b> (GitHub Pages).'); return; }
+  const eng = engineFor();
+  if (eng === 'browser') {
+    if (!SR) { pracError('Este navegador no tiene reconocimiento de voz (SpeechRecognition). Usa Safari o Chrome, o descarga el modelo Whisper abajo.'); return; }
+    if (!navigator.onLine) { pracError('El reconocimiento del navegador necesita internet. Descarga el modelo Whisper abajo para practicar sin conexión.'); return; }
+    startBrowser();
+  } else {
+    if (!navigator.mediaDevices || !window.MediaRecorder) { pracError('Este navegador no permite grabar audio (MediaRecorder). Actualiza iOS o usa Safari.'); return; }
+    if (!store.get(KEY_MODEL, null) && !navigator.onLine) { pracError('No hay conexión y el modelo Whisper aún no está descargado. Descárgalo cuando tengas internet.'); return; }
+    startWhisperRec();
+  }
+};
+
+function startBrowser() {
+  finalText = ''; interimText = ''; stopRequested = false;
+  try {
+    recog = new SR();
+    recog.lang = 'zh-CN'; recog.interimResults = true; recog.continuous = true; recog.maxAlternatives = 1;
+  } catch (e) { pracError('No se ha podido iniciar el reconocimiento: ' + esc(String(e.message || e))); return; }
+  recog.onresult = (ev) => {
+    let interim = '';
+    for (let i = ev.resultIndex; i < ev.results.length; i++) {
+      const r = ev.results[i];
+      if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript;
+    }
+    interimText = interim; showLive();
+  };
+  recog.onerror = (ev) => {
+    const m = {
+      'not-allowed': 'Permiso de micrófono denegado. En iPhone: Ajustes → Safari → Micrófono, y activa Siri y Dictado.',
+      'service-not-allowed': 'El reconocimiento de voz no está disponible. Activa Siri y Dictado en Ajustes, o usa Whisper.',
+      'network': 'Error de red en el reconocimiento. Comprueba la conexión o usa Whisper (sin conexión).',
+      'no-speech': 'No se ha detectado voz. Acércate al micrófono e inténtalo de nuevo.',
+      'audio-capture': 'No se encuentra el micrófono.',
+      'language-not-supported': 'El reconocimiento en chino (zh-CN) no está disponible en este dispositivo.',
+    }[ev.error];
+    if (ev.error !== 'aborted') pracError(m || 'Error de reconocimiento: ' + esc(ev.error));
+    if (ev.error !== 'no-speech') stopRequested = true;
+  };
+  recog.onend = () => {
+    if (!stopRequested && recState === 'rec') { try { recog.start(); return; } catch {} }
+    finishBrowser();
+  };
+  try { recog.start(); } catch (e) { pracError('No se ha podido iniciar el micrófono: ' + esc(String(e.message || e))); return; }
+  setRecUI('rec'); showLive('Escuchando… habla ahora.'); hideResult();
+}
+function finishBrowser() {
+  if (recState === 'idle') return;
+  const heard = (finalText + interimText).trim(); interimText = '';
+  setRecUI('idle');
+  if (heard) { finalText = heard; showLive(); showResult(heard, null); }
+  else showLive('No se ha oído nada. Vuelve a intentarlo.');
+}
+
+async function startWhisperRec() {
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } });
+  } catch (e) {
+    pracError(e && e.name === 'NotAllowedError' ? 'Permiso de micrófono denegado. Actívalo en Ajustes → Safari → Micrófono.' : 'No se ha podido abrir el micrófono: ' + esc(String(e.message || e)));
+    return;
+  }
+  chunks = [];
+  try { mediaRec = new MediaRecorder(mediaStream); } catch (e) { pracError('No se puede grabar audio en este navegador.'); stopStream(); return; }
+  mediaRec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+  mediaRec.onstop = onWhisperStop;
+  mediaRec.start(250);
+  recStart = Date.now();
+  setRecUI('rec'); hideResult();
+  timerInt = setInterval(() => { const s = Math.floor((Date.now() - recStart) / 1000); showLive(`Grabando… ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} · Whisper transcribe al detener.`); }, 250);
+  showLive('Grabando…');
+  startMeter(mediaStream);
+  ensureWorker(); worker.postMessage({ type: 'load', model: prefs.model }); // precarga mientras hablas
+}
+function stopStream() { if (mediaStream) mediaStream.getTracks().forEach((t) => t.stop()); mediaStream = null; }
+function startMeter(stream) {
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = audioCtx.createMediaStreamSource(stream); const an = audioCtx.createAnalyser(); an.fftSize = 512; src.connect(an);
+    const buf = new Uint8Array(an.fftSize); $('meter').style.display = 'block';
+    const tick = () => { an.getByteTimeDomainData(buf); let peak = 0; for (const v of buf) peak = Math.max(peak, Math.abs(v - 128)); $('meter').firstElementChild.style.width = Math.min(100, peak * 1.6) + '%'; meterRAF = requestAnimationFrame(tick); };
+    tick();
+  } catch {}
+}
+function stopMeter() { cancelAnimationFrame(meterRAF); $('meter').style.display = 'none'; if (audioCtx) { audioCtx.close().catch(() => {}); audioCtx = null; } }
+
+function stopRecording() {
+  if (recog) { stopRequested = true; try { recog.stop(); } catch { finishBrowser(); } recog = null; setRecUI('busy', 'Terminando…'); setTimeout(() => { if (recState === 'busy') finishBrowser(); }, 2500); return; }
+  if (mediaRec && mediaRec.state !== 'inactive') { clearInterval(timerInt); setRecUI('busy'); mediaRec.stop(); }
+}
+async function decodeTo16k(blob) {
+  const ab = await blob.arrayBuffer();
+  const AC = window.AudioContext || window.webkitAudioContext; const ctx = new AC();
+  const buf = await new Promise((res, rej) => { const p = ctx.decodeAudioData(ab, res, rej); if (p && p.then) p.then(res, rej); });
+  ctx.close().catch(() => {});
+  const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  const off = new OAC(1, Math.max(1, Math.ceil(buf.duration * 16000)), 16000);
+  const src = off.createBufferSource(); src.buffer = buf; src.connect(off.destination); src.start();
+  const out = await off.startRendering();
+  return out.getChannelData(0);
+}
+async function onWhisperStop() {
+  stopMeter(); stopStream();
+  const blob = new Blob(chunks, { type: (mediaRec && mediaRec.mimeType) || 'audio/mp4' }); mediaRec = null;
+  if (lastAudioUrl) URL.revokeObjectURL(lastAudioUrl); lastAudioUrl = URL.createObjectURL(blob);
+  if (blob.size < 1000) { setRecUI('idle'); showLive('Grabación demasiado corta. Mantén pulsado más tiempo.'); return; }
+  try {
+    showLive('Preparando audio…');
+    const audio = await decodeTo16k(blob);
+    showLive(workerReady === prefs.model ? 'Transcribiendo con Whisper…' : 'Cargando el modelo y transcribiendo… (la primera vez tarda más)');
+    const res = await whisperCall({ type: 'transcribe', model: prefs.model, audio }, [audio.buffer]);
+    finalText = res.text; interimText = ''; showLive();
+    setRecUI('idle');
+    if (res.text) showResult(res.text, lastAudioUrl, res.ms); else showLive('Whisper no ha reconocido texto. Prueba a hablar más cerca o más despacio.');
+  } catch (e) {
+    setRecUI('idle'); showLive('No se ha podido transcribir esta grabación.');
+    pracError('Error con Whisper: ' + esc(String(e.message || e)) + (navigator.onLine ? '' : '<br>Si es la primera vez, necesitas internet para descargar el modelo.'));
+  }
+}
+
+/* ---------- Worker Whisper ---------- */
+let worker = null, workerReady = null, pending = null;
+function ensureWorker() {
+  if (worker) return worker;
+  worker = new Worker('./whisper-worker.js', { type: 'module' });
+  worker.onmessage = ({ data }) => {
+    if (data.type === 'progress') onDlProgress(data);
+    else if (data.type === 'ready') { workerReady = data.model; store.set(KEY_MODEL, data.model); renderModelChip(); renderEngineLabel(); onDlDone(); if (pending && pending.kind === 'load') { pending.res(data); pending = null; } }
+    else if (data.type === 'result') { if (pending && pending.kind === 'transcribe') { pending.res(data); pending = null; } }
+    else if (data.type === 'error') { onDlError(data.message); if (pending) { pending.rej(new Error(data.message)); pending = null; } }
+  };
+  worker.onerror = (e) => { const m = e.message || 'no se ha podido iniciar el worker'; onDlError(m); if (pending) { pending.rej(new Error(m)); pending = null; } };
+  return worker;
+}
+function whisperCall(msg, transfer) {
+  ensureWorker();
+  return new Promise((res, rej) => { pending = { kind: msg.type, res, rej }; worker.postMessage(msg, transfer || []); });
+}
+
+/* ---------- Descarga del modelo ---------- */
+let dlActive = false;
+function renderDl() {
+  const ready = store.get(KEY_MODEL, null); const msg = $('dlMsg');
+  if (ready === prefs.model) { msg.className = 'note okn'; msg.textContent = 'Modelo descargado. Puedes practicar sin conexión.'; $('btnDownload').textContent = 'Comprobar modelo'; }
+  else { msg.className = 'note info'; msg.textContent = ready ? 'Tienes otro modelo descargado. Descarga este para usarlo.' : 'Aún no hay modelo descargado. Con wifi tarda uno o dos minutos.'; $('btnDownload').textContent = 'Descargar modelo para usar sin conexión'; }
+}
+$('btnDownload').onclick = async () => {
+  if (dlActive) return;
+  if (!navigator.onLine && store.get(KEY_MODEL, null) !== prefs.model) { $('dlMsg').className = 'note err'; $('dlMsg').textContent = 'Necesitas internet para la primera descarga.'; return; }
+  dlActive = true; $('btnDownload').disabled = true; $('dlBar').classList.remove('hidden'); $('dlBar').firstElementChild.style.width = '2%';
+  $('dlMsg').className = 'note info'; $('dlMsg').textContent = 'Preparando…';
+  try { if (navigator.storage && navigator.storage.persist) await navigator.storage.persist(); } catch {}
+  whisperCall({ type: 'load', model: prefs.model }).catch(() => {});
+};
+function fmtMB(b) { return (b / 1048576).toFixed(b > 1e8 ? 0 : 1) + ' MB'; }
+function onDlProgress(d) {
+  if (!d.total) return; const pct = Math.min(100, (d.loaded / d.total) * 100);
+  $('dlBar').classList.remove('hidden'); $('dlBar').firstElementChild.style.width = pct.toFixed(1) + '%';
+  $('dlMsg').className = 'note info'; $('dlMsg').textContent = `Descargando modelo… ${fmtMB(d.loaded)} de ${fmtMB(d.total)}`;
+}
+function onDlDone() { dlActive = false; $('btnDownload').disabled = false; $('dlBar').classList.add('hidden'); renderDl(); }
+function onDlError(m) {
+  dlActive = false; $('btnDownload').disabled = false; $('dlBar').classList.add('hidden');
+  $('dlMsg').className = 'note err'; $('dlMsg').textContent = 'No se ha podido cargar el modelo: ' + m + (/fetch|network/i.test(m) ? ' · Comprueba la conexión a internet (la primera descarga viene de huggingface.co).' : '');
+}
+
+/* ---------- Comparación ---------- */
+function compare(refChars, refPy, hypText) {
+  const hyp = [...hypText].filter((c) => HAN.test(c)); const hypPy = autoPy(hyp.join(''));
+  const R = [], RP = [];
+  refChars.forEach((c, i) => { if (HAN.test(c)) { R.push(c); RP.push(refPy[i] || ''); } });
+  const n = R.length, m = hyp.length;
+  const cost = (i, j) => (R[i] === hyp[j] ? 0 : plain(RP[i]) && plain(RP[i]) === plain(hypPy[j]) ? 0.3 : 1);
+  const D = Array.from({ length: n + 1 }, (_, i) => { const a = new Float32Array(m + 1); a[0] = i; return a; });
+  for (let j = 0; j <= m; j++) D[0][j] = j;
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) D[i][j] = Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1, D[i - 1][j - 1] + cost(i - 1, j - 1));
+  const ops = []; let i = n, j = m;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && Math.abs(D[i][j] - (D[i - 1][j - 1] + cost(i - 1, j - 1))) < 1e-4) {
+      const c = cost(i - 1, j - 1); ops.push({ t: c === 0 ? 'ok' : c < 1 ? 'homo' : 'sub', r: R[i - 1], rp: RP[i - 1], h: hyp[j - 1], hp: hypPy[j - 1] }); i--; j--;
+    } else if (i > 0 && Math.abs(D[i][j] - (D[i - 1][j] + 1)) < 1e-4) { ops.push({ t: 'del', r: R[i - 1], rp: RP[i - 1] }); i--; }
+    else { ops.push({ t: 'ins', h: hyp[j - 1], hp: hypPy[j - 1] }); j--; }
+  }
+  ops.reverse();
+  const cnt = { ok: 0, homo: 0, sub: 0, del: 0, ins: 0 }; ops.forEach((o) => cnt[o.t]++);
+  const N = Math.max(1, n);
+  const sound = Math.max(0, Math.round((1 - (cnt.sub + cnt.del + cnt.ins) / N) * 100));
+  const chars = Math.max(0, Math.round((1 - (cnt.sub + cnt.del + cnt.ins + cnt.homo) / N) * 100));
+  return { ops, cnt, sound, chars, n };
+}
+let lastResult = null;
+function hideResult() { $('resultCard').classList.add('hidden'); lastResult = null; }
+function showResult(heard, audioUrl, ms) {
+  const t = current(); const r = targetRange(); const chars = [...t.zh];
+  const res = compare(chars.slice(r.start, r.end), t.py.slice(r.start, r.end), heard);
+  lastResult = { res, heard, audioUrl, ms }; rerenderResult();
+  $('resultCard').classList.remove('hidden');
+  $('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function rerenderResult() {
+  if (!lastResult) return; const { res, heard, audioUrl, ms } = lastResult; const s = res.sound;
+  const ring = $('ring'); ring.style.setProperty('--p', s); ring.style.setProperty('--c', s >= 85 ? 'var(--ok)' : s >= 60 ? 'var(--homo)' : 'var(--bad)');
+  $('ringVal').textContent = s + '%';
+  $('resTitle').textContent = s >= 95 ? '¡Excelente! 太棒了！' : s >= 85 ? 'Muy bien 很好' : s >= 60 ? 'Vas bien, repasa lo marcado' : s >= 30 ? 'Sigue practicando 加油' : 'Prueba más despacio y frase a frase';
+  $('resSub').textContent = `Coincidencia de sonido: ${s}% · caracteres exactos: ${res.chars}% · ${res.n} caracteres` + (ms ? ` · Whisper ${(ms / 1000).toFixed(1)} s` : '') + '. El reconocimiento escribe caracteres, así que los tonos no se puntúan: compáralos escuchando el modelo.';
+  const rb = (c, p, cls, title) => `<ruby class="${cls}" title="${esc(title || '')}">${c}<rt>${esc(p || '')}</rt></ruby>`;
+  $('cmp').classList.toggle('no-py', !prefs.showPy);
+  $('cmp').innerHTML = res.ops.map((o) => {
+    if (o.t === 'ok') return rb(o.r, o.rp, 'ok');
+    if (o.t === 'homo') return rb(o.r, o.rp, 'homo', `Se ha oído ${o.h} (${o.hp})`);
+    if (o.t === 'sub') return rb(o.r, o.rp, 'sub', `Se ha oído ${o.h} (${o.hp})`);
+    if (o.t === 'del') return rb(o.r, o.rp, 'del', 'No se ha oído');
+    return rb(o.h, o.hp, 'ins', 'Sobra');
+  }).join('');
+  const errs = res.ops.filter((o) => o.t !== 'ok');
+  const tag = { homo: ['Sonido ok', 'var(--homo-bg)', 'var(--homo)'], sub: ['Fallado', 'var(--bad-bg)', 'var(--bad)'], del: ['Falta', 'var(--miss-bg)', 'var(--miss)'], ins: ['Sobra', 'var(--extra-bg)', 'var(--extra)'] };
+  $('errs').innerHTML = errs.slice(0, 40).map((o) => {
+    const [l, bg, fg] = tag[o.t];
+    const body = o.t === 'ins' ? `<span class="zh">${o.h}</span> <span>${esc(o.hp || '')}</span> no está en el texto`
+      : o.t === 'del' ? `<span class="zh">${o.r}</span> <span>${esc(o.rp)}</span> no se ha oído`
+      : `esperado <span class="zh">${o.r}</span> <b>${esc(o.rp)}</b> → oído <span class="zh">${o.h}</span> ${esc(o.hp || '')}`;
+    return `<li><span class="tag" style="background:${bg};color:${fg}">${l}</span>${body}</li>`;
+  }).join('') + (errs.length > 40 ? `<li>… y ${errs.length - 40} más</li>` : '');
+  $('heard').innerHTML = `Se ha oído: <span class="zh">${esc(heard)}</span>`;
+  const bm = $('btnMine'); bm.classList.toggle('hidden', !audioUrl);
+  bm.onclick = () => { if (audioUrl) new Audio(audioUrl).play().catch(() => pracError('No se ha podido reproducir tu grabación.')); };
+}
+$('btnAgain').onclick = () => { $('btnRec').scrollIntoView({ behavior: 'smooth', block: 'center' }); $('btnRec').click(); };
+$('btnNext').onclick = () => { const r = targetRange(); if (r.n && r.n < r.total) { selSentence = r.n; hideResult(); renderReader(); renderTarget(); $('target').scrollIntoView({ behavior: 'smooth', block: 'center' }); } };
+
+/* ---------- Comprobaciones iniciales ---------- */
+const missing = [];
+if (!synth) missing.push('lectura en voz alta (speechSynthesis)');
+if (!SR && !(window.MediaRecorder && window.Worker)) missing.push('reconocimiento de voz');
+if (missing.length) showGlobal('Tu navegador no soporta: ' + missing.join(' y ') + '. Prueba con Safari actualizado o Chrome.');
+if (!PP) showGlobal('No se ha podido cargar el generador de pinyin.');
+if (location.protocol === 'file:') pracError('Estás abriendo el archivo directamente: el micrófono y el modo sin conexión solo funcionan desde una dirección <b>https://</b>.');
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('./sw.js').catch(() => {});
+
+renderNet(); renderModelChip(); renderDl(); renderAll();
+window.__awau = { compare, autoPy, numToMark, alignPy, sentencesOf, state, showResult };
+})();
+</script>
+</body>
+</html>
