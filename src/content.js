@@ -3,6 +3,7 @@
 // (pinyin-pro + correcciones de tonos neutros) y se revisa a mano.
 
 const CATS = [
+  { id: 'calentar', name: 'Calentamiento', zh: '热身' },
   { id: 'carta', name: 'Carta recomendación', zh: '推荐信' },
   { id: 'regatear', name: 'Regatear', zh: '讲价' },
   { id: 'restaurante', name: 'Restaurante', zh: '餐厅' },
@@ -16,6 +17,22 @@ const CATS = [
 
 const TU = 'Tú';
 const TEXTS = [
+  // ---------- CALENTAMIENTO ----------
+  { id: 'calentar-pares', cat: 'calentar', title: 'Pares de sonidos y trabalenguas', lines: [
+    ['', '妈，麻，马，骂。', 'Los cuatro tonos: madre, cáñamo, caballo, regañar.'],
+    ['', '八，怕。', 'b / p: sin aire y con aire (ocho, tener miedo).'],
+    ['', '大，他。', 'd / t: sin aire y con aire (grande, él).'],
+    ['', '哥，科。', 'g / k: sin aire y con aire (hermano mayor, asignatura).'],
+    ['', '资，知。', 'z / zh: lengua delante y lengua hacia atrás.'],
+    ['', '四，是。', 's / sh: cuatro, ser.'],
+    ['', '七，吃。', 'q / ch: siete, comer.'],
+    ['', '西，师。', 'x / sh: oeste, maestro.'],
+    ['', '女，努。', 'ü / u: mujer, esforzarse.'],
+    ['', '绿，路。', 'ü / u: verde, camino.'],
+    ['', '你好，谢谢，再见。', 'Hola, gracias, adiós (cuidado con 你好: el primer tercer tono suena como segundo).'],
+    ['', '四是四，十是十，十四是十四，四十是四十。', 'Trabalenguas s / sh: cuatro es cuatro, diez es diez, catorce es catorce, cuarenta es cuarenta.'],
+    ['', '妈妈骑马，马慢，妈妈骂马。', 'Trabalenguas de tonos: mamá monta a caballo, el caballo va lento, mamá riñe al caballo.'],
+  ]},
   // ---------- REGATEAR ----------
   { id: 'regatear-dialogo', cat: 'regatear', title: 'Diálogo · En el mercado', lines: [
     [TU, '老板，这个多少钱？', 'Jefe, ¿cuánto cuesta esto?'],

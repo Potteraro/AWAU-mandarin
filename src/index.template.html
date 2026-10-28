@@ -165,6 +165,30 @@ rt{font-family:var(--ui);font-size:.46em;font-weight:600;letter-spacing:-.01em;c
 .note.info{background:var(--card2);color:var(--muted);border:1px solid var(--line)}
 .note.okn{background:var(--ok-bg);color:var(--ok)}
 .hidden{display:none!important}
+.warmbtn{flex:none}
+.sheet{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 24px)}
+.sheet-head{position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.sheet-head .wrap{display:flex;align-items:center;gap:10px;padding-top:12px;padding-bottom:12px}
+.sheet-head h2{margin:0;font-size:18px;flex:1 1 auto}
+.wx{counter-reset:none}
+.wx .card{margin:12px 0}
+.wx h3{margin:0 0 4px;font-size:17px;display:flex;align-items:center;gap:10px}
+.wx h3 .num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:14px;flex:none}
+.wx .dur{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-left:auto}
+.wx .why{font-size:14px;color:var(--muted);margin:0 0 8px;line-height:1.45}
+.wx ol,.wx ul{margin:6px 0 4px;padding-left:20px;line-height:1.55;font-size:15px}
+.wx li{margin:3px 0}
+.says{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.say{border:1px solid var(--line);background:var(--card2);border-radius:12px;padding:6px 12px;display:inline-flex;align-items:baseline;gap:8px;min-height:44px}
+.say b{font-family:var(--zh);font-size:22px;font-weight:500}
+.say span{font-size:14px;font-weight:600;color:var(--muted)}
+.say.t1 span{color:var(--t1)}.say.t2 span{color:var(--t2)}.say.t3 span{color:var(--t3)}.say.t4 span{color:var(--t4)}
+.say.long b{font-size:18px}
+.tonebars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.tonebars div{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:13px;color:var(--muted)}
+.tonebars svg{width:100%;height:44px;display:block}
+.done-row{display:flex;justify-content:flex-end;margin-top:8px}
+.done-row label{font-size:14px;font-weight:600;color:var(--muted);display:inline-flex;gap:8px;align-items:center}
 .progress{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:10px}
 .progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
 details summary{cursor:pointer;font-weight:700;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center}
@@ -186,6 +210,7 @@ details[open] summary::after{content:"－"}
       <div class="seal" aria-hidden="true">中</div>
       <div><h1>Práctica de pronunciación</h1><small>AWAU · 普通话</small></div>
     </div>
+    <button class="btn warmbtn" id="btnWarm" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3 4 4.5 4 8.5a4 4 0 0 1-8 0c0-1.6.7-2.7 1.5-3.5.2 1.5 1 2.3 2 2.5-.6-2.6-.2-5.3.5-7.5z"/><path d="M6 14a6 6 0 0 0 12 0"/></svg>Calentar la boca</button>
     <div class="chips" aria-live="polite">
       <span class="chip" id="chipNet">…</span>
       <span class="chip" id="chipVoice">Voz china…</span>
@@ -343,6 +368,113 @@ details[open] summary::after{content:"－"}
   </section>
 </div>
 
+
+<!-- CALENTAMIENTO -->
+<div class="sheet hidden" id="warm" role="dialog" aria-modal="true" aria-labelledby="hWarm">
+  <div class="sheet-head"><div class="wrap">
+    <h2 id="hWarm">Calentar la boca · 热身</h2>
+    <button class="btn icon" id="warmClose" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div></div>
+  <div class="wrap wx">
+    <p class="help" style="margin:14px 0 0">Unos 5 minutos antes de practicar. El mandarín usa músculos que en español casi no trabajamos: la lengua hacia atrás (zh, ch, sh, r), los labios redondos con la lengua delante (ü), golpes de aire (p, t, k, q, ch, c) y una voz que sube y baja (tonos). Toca los ejemplos en chino para escucharlos.</p>
+
+    <section class="card">
+      <h3><span class="num">1</span>Respiración y voz<span class="dur">1 min</span></h3>
+      <p class="why">Los tonos necesitan aire estable y una voz que suba y baje sin esfuerzo.</p>
+      <ol>
+        <li>De pie o sentado recto, mano en la barriga. Inspira por la nariz 4 segundos (se hincha la barriga, no el pecho), aguanta 2 y suelta por la boca en 6. Repite 4 veces.</li>
+        <li>Con la boca cerrada di «mmmm» como una sirena: de lo más grave a lo más agudo y vuelta. 3 veces. Notarás vibrar los labios y la nariz.</li>
+      </ol>
+      <div class="done-row"><label><input type="checkbox" data-done="1"> Hecho</label></div>
+    </section>
+
+    <section class="card">
+      <h3><span class="num">2</span>Mandíbula<span class="dur">40 s</span></h3>
+      <p class="why">Una mandíbula suelta abre bien la «a» y la «ang» y evita hablar con la boca cerrada.</p>
+      <ol>
+        <li>Masajea con dos dedos en círculos los músculos de delante de las orejas (maseteros), 10 segundos.</li>
+        <li>Abre la boca grande y lento diciendo «aaa», como un bostezo, y ciérrala. 5 veces.</li>
+        <li>Con la boca entreabierta, mueve la mandíbula de lado a lado despacio. 5 veces. Si duele o cruje con dolor, para.</li>
+      </ol>
+      <div class="says"><button class="say t1" data-say="八"><b>八</b><span>bā</span></button><button class="say t2" data-say="忙"><b>忙</b><span>máng</span></button><button class="say t4" data-say="大"><b>大</b><span>dà</span></button></div>
+      <div class="done-row"><label><input type="checkbox" data-done="2"> Hecho</label></div>
+    </section>
+
+    <section class="card">
+      <h3><span class="num">3</span>Labios<span class="dur">1 min</span></h3>
+      <p class="why">El chino diferencia «i», «u» y «ü» solo por la forma de los labios.</p>
+      <ol>
+        <li>Vibra los labios como un caballo («brrrr») 10 segundos, primero en un tono y luego subiendo y bajando.</li>
+        <li>Alterna sonrisa exagerada «iii» y morro adelante «uuu». 10 veces, rápido.</li>
+        <li><b>La ü:</b> di «iii» y, sin mover la lengua, redondea los labios como para silbar. Eso es la ü. Mantén 3 segundos. 5 veces.</li>
+      </ol>
+      <div class="says"><button class="say t3" data-say="女"><b>女</b><span>nǚ</span></button><button class="say t3" data-say="努"><b>努</b><span>nǔ</span></button><button class="say t4" data-say="绿"><b>绿</b><span>lǜ</span></button><button class="say t4" data-say="路"><b>路</b><span>lù</span></button><button class="say t4" data-say="去"><b>去</b><span>qù</span></button></div>
+      <div class="done-row"><label><input type="checkbox" data-done="3"> Hecho</label></div>
+    </section>
+
+    <section class="card">
+      <h3><span class="num">4</span>Lengua<span class="dur">1 min 30 s</span></h3>
+      <p class="why">Es el ejercicio más importante: zh, ch, sh y r se dicen con la punta de la lengua levantada hacia atrás; j, q y x con la punta abajo y el centro de la lengua arriba.</p>
+      <ol>
+        <li>Barre el paladar con la punta de la lengua de delante hacia atrás, despacio. 5 veces.</li>
+        <li><b>Lengua atrás (zh, ch, sh, r):</b> levanta la punta y llévala hasta la parte dura del paladar, detrás de las encías. Mantén 3 segundos y suelta. 5 veces. Después di «shhh» con la lengua en esa posición.</li>
+        <li><b>Lengua abajo (j, q, x):</b> apoya la punta detrás de los dientes de abajo, sonríe y di «xi, xi, xi». El aire sale por el centro, como un «s» suave.</li>
+        <li><b>Lengua delante (z, c, s):</b> punta detrás de los dientes de arriba, como en «ts» de «tsunami».</li>
+      </ol>
+      <div class="says"><button class="say t1" data-say="资"><b>资</b><span>zī</span></button><button class="say t1" data-say="知"><b>知</b><span>zhī</span></button><button class="say t4" data-say="四"><b>四</b><span>sì</span></button><button class="say t4" data-say="是"><b>是</b><span>shì</span></button><button class="say t1" data-say="西"><b>西</b><span>xī</span></button><button class="say t1" data-say="师"><b>师</b><span>shī</span></button><button class="say t4" data-say="日"><b>日</b><span>rì</span></button></div>
+      <div class="done-row"><label><input type="checkbox" data-done="4"> Hecho</label></div>
+    </section>
+
+    <section class="card">
+      <h3><span class="num">5</span>Golpes de aire (aspiración)<span class="dur">40 s</span></h3>
+      <p class="why">En chino b/p, d/t, g/k, z/c, zh/ch y j/q no se distinguen por la voz, sino por el aire: p, t, k, c, ch y q llevan un soplo fuerte.</p>
+      <ol>
+        <li>Pon la palma de la mano (o un papel) a 5 cm de la boca.</li>
+        <li>Di «pa»: tienes que notar un golpe de aire. Di «ba»: casi nada de aire.</li>
+        <li>Repite cada pareja 3 veces, exagerando el soplo.</li>
+      </ol>
+      <div class="says"><button class="say t1" data-say="八"><b>八</b><span>bā</span></button><button class="say t4" data-say="怕"><b>怕</b><span>pà</span></button><button class="say t4" data-say="大"><b>大</b><span>dà</span></button><button class="say t1" data-say="他"><b>他</b><span>tā</span></button><button class="say t1" data-say="哥"><b>哥</b><span>gē</span></button><button class="say t1" data-say="科"><b>科</b><span>kē</span></button><button class="say t1" data-say="七"><b>七</b><span>qī</span></button><button class="say t1" data-say="吃"><b>吃</b><span>chī</span></button></div>
+      <div class="done-row"><label><input type="checkbox" data-done="5"> Hecho</label></div>
+    </section>
+
+    <section class="card">
+      <h3><span class="num">6</span>Tonos<span class="dur">1 min</span></h3>
+      <p class="why">Piensa en tu voz como una escala del 1 (grave) al 5 (agudo).</p>
+      <div class="tonebars">
+        <div><svg viewBox="0 0 100 50"><path d="M10 10H90" stroke="var(--t1)" stroke-width="6" stroke-linecap="round" fill="none"/></svg><b style="color:var(--t1)">1.º</b> alto y plano</div>
+        <div><svg viewBox="0 0 100 50"><path d="M10 28L90 10" stroke="var(--t2)" stroke-width="6" stroke-linecap="round" fill="none"/></svg><b style="color:var(--t2)">2.º</b> sube, como «¿eh?»</div>
+        <div><svg viewBox="0 0 100 50"><path d="M10 32Q45 50 60 44T90 18" stroke="var(--t3)" stroke-width="6" stroke-linecap="round" fill="none"/></svg><b style="color:var(--t3)">3.º</b> baja y se queda abajo</div>
+        <div><svg viewBox="0 0 100 50"><path d="M10 8L90 44" stroke="var(--t4)" stroke-width="6" stroke-linecap="round" fill="none"/></svg><b style="color:var(--t4)">4.º</b> cae fuerte, como «¡no!»</div>
+      </div>
+      <ol>
+        <li>Di «ma» en los cuatro tonos, exagerando mucho y moviendo la mano con la forma del tono. 3 veces.</li>
+        <li>El 3.º tono en una frase normal se queda grave (casi no sube). Y dos 3.º seguidos: el primero se dice como 2.º (你好 suena «ní hǎo»).</li>
+      </ol>
+      <div class="says"><button class="say t1" data-say="妈"><b>妈</b><span>mā</span></button><button class="say t2" data-say="麻"><b>麻</b><span>má</span></button><button class="say t3" data-say="马"><b>马</b><span>mǎ</span></button><button class="say t4" data-say="骂"><b>骂</b><span>mà</span></button><button class="say long" data-say="你好"><b>你好</b><span>nǐ hǎo</span></button><button class="say long" data-say="谢谢"><b>谢谢</b><span>xiè xie</span></button></div>
+      <div class="done-row"><label><input type="checkbox" data-done="6"> Hecho</label></div>
+    </section>
+
+    <section class="card">
+      <h3><span class="num">7</span>Trabalenguas · 绕口令<span class="dur">1 min</span></h3>
+      <p class="why">Primero lento y exagerado, luego más rápido. Si te trabas, vuelve a lento.</p>
+      <div class="says">
+        <button class="say long" data-say="四是四，十是十，十四是十四，四十是四十。"><b>四是四，十是十，十四是十四，四十是四十。</b></button>
+      </div>
+      <p class="why" style="margin-top:6px">sì shì sì, shí shì shí, shí sì shì shí sì, sì shí shì sì shí · s (lengua delante) contra sh (lengua atrás)</p>
+      <div class="says">
+        <button class="say long" data-say="妈妈骑马，马慢，妈妈骂马。"><b>妈妈骑马，马慢，妈妈骂马。</b></button>
+      </div>
+      <p class="why" style="margin-top:6px">mā ma qí mǎ, mǎ màn, mā ma mà mǎ · los cuatro tonos con la misma sílaba</p>
+      <div class="done-row"><label><input type="checkbox" data-done="7"> Hecho</label></div>
+    </section>
+
+    <section class="card">
+      <h3>¿Y ahora?</h3>
+      <p class="why">Graba los pares de sonidos y los trabalenguas para ver si la app te entiende cada sonido.</p>
+      <div class="row"><button class="btn primary big" id="warmPractice">Practicar con grabación</button><button class="btn big" id="warmReset">Empezar de nuevo</button></div>
+    </section>
+  </div>
+</div>
 <script>
 /*__PINYIN_PRO__*/
 </script>
@@ -412,7 +544,7 @@ function ensurePy(t) {
   if (!Array.isArray(t.py) || t.py.length !== chars.length) t.py = autoPy(t.zh);
   return t;
 }
-const CONTENT_VERSION = 2;
+const CONTENT_VERSION = 3;
 const BASE = [Object.assign(clone(TEXTO_PRINCIPAL), { cat: 'carta' }), ...TEXTOS_BASE.map(clone), Object.assign(clone(DEFAULT_SHORT), { cat: 'mis' })];
 const BASE_BY_ID = Object.fromEntries(BASE.map((t) => [t.id, t]));
 const CAT_IDS = new Set(CATS.map((c) => c.id));
@@ -1019,6 +1151,38 @@ function rerenderResult() {
 }
 $('btnAgain').onclick = () => { $('btnRec').scrollIntoView({ behavior: 'smooth', block: 'center' }); $('btnRec').click(); };
 $('btnNext').onclick = () => { const r = targetRange(); if (r.n && r.n < r.total) { selSentence = r.n; hideResult(); renderReader(); renderTarget(); $('target').scrollIntoView({ behavior: 'smooth', block: 'center' }); } };
+
+
+/* ---------- Calentamiento ---------- */
+const KEY_WARM = 'awau.calentar.v1';
+function speakZh(text) {
+  if (!synth) { showGlobal('Este navegador no puede leer en voz alta.'); return; }
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text); u.lang = 'zh-CN'; u.rate = Math.min(prefs.rate, 0.8); if (zhVoice) u.voice = zhVoice;
+  synth.speak(u);
+}
+function openWarm() {
+  $('warm').classList.remove('hidden'); document.body.style.overflow = 'hidden'; $('warm').scrollTop = 0;
+  const done = store.get(KEY_WARM, {});
+  document.querySelectorAll('[data-done]').forEach((c) => { c.checked = !!done[c.dataset.done]; });
+  setTimeout(() => $('warmClose').focus(), 50);
+}
+function closeWarm() { $('warm').classList.add('hidden'); document.body.style.overflow = ''; if (synth) synth.cancel(); $('btnWarm').focus(); }
+$('btnWarm').onclick = openWarm;
+$('warmClose').onclick = closeWarm;
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('warm').classList.contains('hidden')) closeWarm(); });
+$('warm').addEventListener('click', (e) => { const b = e.target.closest('[data-say]'); if (b) speakZh(b.dataset.say); });
+$('warm').addEventListener('change', (e) => {
+  const c = e.target.closest('[data-done]'); if (!c) return;
+  const done = store.get(KEY_WARM, {}); done[c.dataset.done] = c.checked; store.set(KEY_WARM, done);
+});
+$('warmReset').onclick = () => { store.set(KEY_WARM, {}); document.querySelectorAll('[data-done]').forEach((c) => { c.checked = false; }); $('warm').scrollTop = 0; };
+$('warmPractice').onclick = () => {
+  const t = state.texts.find((x) => x.id === 'calentar-pares') || textsIn('calentar')[0];
+  closeWarm(); if (!t) return;
+  state.currentId = t.id; selSentence = 0; saveTexts(); hideResult(); setMode(false); renderAll();
+  $('hPrac').scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
 
 /* ---------- Comprobaciones iniciales ---------- */
 const missing = [];
