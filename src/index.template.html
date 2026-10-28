@@ -544,7 +544,7 @@ function ensurePy(t) {
   if (!Array.isArray(t.py) || t.py.length !== chars.length) t.py = autoPy(t.zh);
   return t;
 }
-const CONTENT_VERSION = 3;
+const CONTENT_VERSION = 4;
 const BASE = [Object.assign(clone(TEXTO_PRINCIPAL), { cat: 'carta' }), ...TEXTOS_BASE.map(clone), Object.assign(clone(DEFAULT_SHORT), { cat: 'mis' })];
 const BASE_BY_ID = Object.fromEntries(BASE.map((t) => [t.id, t]));
 const CAT_IDS = new Set(CATS.map((c) => c.id));
@@ -558,6 +558,12 @@ if ((state.contentVersion || 1) < CONTENT_VERSION) {
   for (const b of BASE) if (!state.texts.some((t) => t.id === b.id)) state.texts.push(clone(b));
   state.contentVersion = CONTENT_VERSION;
 }
+// Textos base que no has editado: se actualizan a la versión nueva de la app.
+state.texts.forEach((t, i) => {
+  const b = BASE_BY_ID[t.id]; if (!b) return;
+  const cur = textHash(t.zh, t.es), now = textHash(b.zh, b.es);
+  if (cur !== now && (BASE_HISTORY[t.id] || []).includes(cur)) state.texts[i] = clone(b);
+});
 state.texts.forEach((t) => { ensurePy(t); if (!CAT_IDS.has(t.cat)) t.cat = 'mis'; });
 const prefs = Object.assign({ showEs: true, showPyT: true, showPy: true, showTone: true, rate: 0.8, engine: 'auto', model: 'onnx-community/whisper-base' }, store.get(KEY_PREFS, {}));
 function savePrefs() { store.set(KEY_PREFS, prefs); }

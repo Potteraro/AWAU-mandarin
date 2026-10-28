@@ -18,6 +18,7 @@ const FIX = {
   '订':'dìng','密码':'mì mǎ','房卡':'fáng kǎ','好的':'hǎo de','给你':'gěi nǐ','给我':'gěi wǒ','卖给你':'mài gěi nǐ',
   '饺子':'jiǎo zi','箱子':'xiāng zi','袋子':'dài zi','只会':'zhǐ huì','巴塞罗那':'bā sài luó nà',
   '妈妈':'mā ma','骂马':'mà mǎ','骑马':'qí mǎ','十四':'shí sì','四十':'sì shí','麻':'má',
+  '阿姨':'ā yí','登山包':'dēng shān bāo','好货':'hǎo huò','卖不卖':'mài bu mài','进货':'jìn huò','小伙子':'xiǎo huǒ zi','讲价':'jiǎng jià','哎呀':'āi ya','水壶':'shuǐ hú','生意':'shēng yi','苏州':'sū zhōu','只是':'zhǐ shì','脏':'zāng',
   '买单':'mǎi dān','打包':'dǎ bāo','过敏':'guò mǐn','了':'le',
 };
 customPinyin(FIX);
@@ -38,4 +39,14 @@ if (process.argv[2] === '--print') for (const t of out) {
   const chars = [...t.zh]; let line = '', pl = '';
   chars.forEach((c, i) => { if (c === '\n') { console.log(line + '  |  ' + pl.trim()); line = ''; pl = ''; } else { line += c; if (t.py[i]) pl += t.py[i] + ' '; } });
   console.log(line + '  |  ' + pl.trim());
+}
+
+// Historial de huellas: permite actualizar en el móvil los textos base que el usuario no ha editado.
+{
+  const { textHash } = require('./hash.js');
+  const histFile = __dirname + '/base-history.json';
+  const hist = fs.existsSync(histFile) ? JSON.parse(fs.readFileSync(histFile, 'utf8')) : {};
+  const g = {}; new Function('g', fs.readFileSync(__dirname + '/main-text.js', 'utf8') + '\ng.p = TEXTO_PRINCIPAL;')(g);
+  for (const t of [g.p, ...out]) { const h = textHash(t.zh, t.es); hist[t.id] = hist[t.id] || []; if (!hist[t.id].includes(h)) hist[t.id].push(h); }
+  fs.writeFileSync(histFile, JSON.stringify(hist, null, 1));
 }
