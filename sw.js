@@ -1,6 +1,6 @@
 // Service worker: guarda la app en el dispositivo para que abra sin internet.
 // Cambia VERSION cada vez que subas cambios a index.html para forzar la actualización.
-const VERSION = 'awau-v7';
+const VERSION = 'awau-v8';
 const VENDOR = 'awau-vendor-v1';
 const CORE = [
   './',
