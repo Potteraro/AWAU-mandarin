@@ -564,7 +564,9 @@ function ensurePy(t) {
   if (!Array.isArray(t.py) || t.py.length !== chars.length) t.py = autoPy(t.zh);
   return t;
 }
-const CONTENT_VERSION = 4;
+const CONTENT_VERSION = 5;
+// Textos que se sustituyen sí o sí al pasar a esa versión (aunque los hubieras editado).
+const FORCE_REPLACE = { 5: ['principal'] };
 const BASE = [Object.assign(clone(TEXTO_PRINCIPAL), { cat: 'carta' }), ...TEXTOS_BASE.map(clone), Object.assign(clone(DEFAULT_SHORT), { cat: 'mis' })];
 const BASE_BY_ID = Object.fromEntries(BASE.map((t) => [t.id, t]));
 const CAT_IDS = new Set(CATS.map((c) => c.id));
@@ -576,6 +578,9 @@ if ((state.contentVersion || 1) < CONTENT_VERSION) {
   // Migración: los textos que ya tenías se conservan; se añaden los apartados nuevos.
   state.texts.forEach((t) => { if (!t.cat) t.cat = t.id === 'principal' ? 'carta' : 'mis'; });
   for (const b of BASE) if (!state.texts.some((t) => t.id === b.id)) state.texts.push(clone(b));
+  for (const [v, ids] of Object.entries(FORCE_REPLACE)) {
+    if ((state.contentVersion || 1) < +v) ids.forEach((id) => { const i = state.texts.findIndex((t) => t.id === id); if (i >= 0 && BASE_BY_ID[id]) state.texts[i] = clone(BASE_BY_ID[id]); });
+  }
   state.contentVersion = CONTENT_VERSION;
 }
 // Textos base que no has editado: se actualizan a la versión nueva de la app.
