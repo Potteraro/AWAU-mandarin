@@ -106,8 +106,17 @@ rt{font-family:var(--ui);font-size:.46em;font-weight:600;letter-spacing:-.01em;c
 .reader.no-py.tone-chars .c-t1{color:var(--t1)}.reader.no-py.tone-chars .c-t2{color:var(--t2)}.reader.no-py.tone-chars .c-t3{color:var(--t3)}.reader.no-py.tone-chars .c-t4{color:var(--t4)}.reader.no-py.tone-chars .c-t5{color:var(--t5)}
 .lat{font-family:var(--ui);font-size:.75em;color:var(--muted)}
 
-.target{background:var(--card2);border:1px dashed var(--line);border-radius:14px;padding:10px 12px;font-family:var(--zh);font-size:20px;line-height:1.6;max-height:9.6em;overflow:auto}
-.target .meta{font-family:var(--ui);font-size:12px;color:var(--muted);font-weight:700;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:8px}
+.target{background:var(--card2);border:1px dashed var(--line);border-radius:14px;padding:12px 14px;font-family:var(--zh);font-size:26px;line-height:2.6;min-height:5.4em;max-height:60vh;overflow:auto}
+.target.no-py{line-height:1.8}
+.target.no-py rt{display:none}
+.target.no-tone rt{color:var(--muted)!important}
+.target.no-py.tone-chars .c-t1{color:var(--t1)}.target.no-py.tone-chars .c-t2{color:var(--t2)}.target.no-py.tone-chars .c-t3{color:var(--t3)}.target.no-py.tone-chars .c-t4{color:var(--t4)}.target.no-py.tone-chars .c-t5{color:var(--t5)}
+.phead{display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;margin-bottom:10px;min-height:34px}
+.phead h2{margin:0}
+.phead .lbl2{font-size:13px;font-weight:700;color:var(--ink)}
+.phead .sp{flex:1 1 auto}
+.mini{min-height:34px!important;padding:2px 10px!important;font-size:13px!important;border-radius:10px!important}
+.mini.icon{width:34px;padding:0!important}
 
 .live{min-height:56px;border-radius:14px;background:var(--card2);border:1px solid var(--line);padding:10px 12px;font-family:var(--zh);font-size:20px;line-height:1.6;color:var(--ink)}
 .live .interim{color:var(--muted)}
@@ -226,8 +235,19 @@ details[open] summary::after{content:"－"}
 
   <!-- PRÁCTICA -->
   <section class="card" aria-labelledby="hPrac">
-    <h2 id="hPrac">Práctica</h2>
-    <div class="target" id="target"></div>
+    <div class="phead">
+      <h2 id="hPrac">Práctica</h2>
+      <span class="lbl2" id="pracLabel"></span>
+      <span class="sp"></span>
+      <button class="btn mini" id="btnAll">Ver todo</button>
+    </div>
+    <div class="phead">
+      <label class="tg"><input type="checkbox" id="tgPyT" checked> Pinyin</label>
+      <span class="sp"></span>
+      <button class="btn mini icon" id="btnPrev" aria-label="Frase anterior">‹</button>
+      <button class="btn mini icon" id="btnNext2" aria-label="Frase siguiente">›</button>
+    </div>
+    <div class="target" id="target" lang="zh-CN"></div>
 
     <div class="row" style="margin-top:12px">
       <button class="btn big" id="btnListen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg><span>Escuchar modelo</span></button>
@@ -244,6 +264,7 @@ details[open] summary::after{content:"－"}
     <div class="live" id="live" aria-live="polite"><span class="ph">Pulsa «Grabar y comparar» y lee el texto en voz alta.</span></div>
     <div class="meter" id="meter"><i></i></div>
     <div id="pracErr" class="note err hidden" role="alert"></div>
+    <details id="diag" style="margin-top:12px"><summary>Diagnóstico</summary><pre id="diagLog" class="help" style="white-space:pre-wrap;font-size:12px;margin:8px 0 0"></pre></details>
   </section>
 
   <!-- RESULTADO -->
@@ -381,7 +402,7 @@ if (!state || !Array.isArray(state.texts) || !state.texts.length) {
   state = { texts: [clone(TEXTO_PRINCIPAL), clone(DEFAULT_SHORT)], currentId: 'principal' };
 }
 state.texts.forEach(ensurePy);
-const prefs = Object.assign({ showPy: true, showTone: true, rate: 0.8, engine: 'auto', model: 'onnx-community/whisper-base' }, store.get(KEY_PREFS, {}));
+const prefs = Object.assign({ showPyT: true, showPy: true, showTone: true, rate: 0.8, engine: 'auto', model: 'onnx-community/whisper-base' }, store.get(KEY_PREFS, {}));
 function savePrefs() { store.set(KEY_PREFS, prefs); }
 function saveTexts() { if (!store.set(KEY_TEXTS, state)) showGlobal('No se han podido guardar los textos en este dispositivo (almacenamiento bloqueado o lleno).'); }
 function current() { return state.texts.find((t) => t.id === state.currentId) || state.texts[0]; }
@@ -435,13 +456,21 @@ function renderReader() {
 }
 function renderTarget() {
   const t = current(); const r = targetRange(); const chars = [...t.zh];
-  const label = r.n ? `Frase ${r.n} de ${r.total}` : `Texto completo · ${r.total} frase${r.total === 1 ? '' : 's'}`;
-  $('target').innerHTML = `<div class="meta"><span>${label}</span>${r.n ? '<button class="btn" id="btnAll" style="min-height:30px;padding:2px 10px;font-size:12px">Ver todo</button>' : ''}</div>${esc(chars.slice(r.start, r.end).join('').replace(/\n/g, ' '))}`;
-  const b = $('btnAll'); if (b) b.onclick = () => { selSentence = -1; renderAll(); };
+  $('pracLabel').textContent = r.n ? `Frase ${r.n} de ${r.total}` : `Texto completo · ${r.total} frase${r.total === 1 ? '' : 's'}`;
+  const tg = $('target');
+  tg.classList.toggle('no-py', !prefs.showPyT);
+  tg.classList.toggle('no-tone', !prefs.showTone);
+  tg.classList.toggle('tone-chars', prefs.showTone);
+  tg.innerHTML = rubyHtml(chars, t.py, r.start, r.end);
+  $('btnAll').classList.toggle('hidden', !r.n);
+  $('btnPrev').disabled = r.n === 1; $('btnNext2').disabled = r.n === r.total && r.total > 0;
   $('btnNext').classList.toggle('hidden', !(r.n && r.n < r.total));
 }
 function renderAll() { renderSelect(); renderReader(); renderTarget(); }
 
+$('btnAll').onclick = () => { selSentence = -1; hideResult(); renderReader(); renderTarget(); };
+$('btnPrev').onclick = () => { const r = targetRange(); selSentence = r.n ? Math.max(0, r.n - 2) : r.total - 1; hideResult(); renderReader(); renderTarget(); };
+$('btnNext2').onclick = () => { const r = targetRange(); selSentence = r.n ? Math.min(r.total - 1, r.n) : 0; hideResult(); renderReader(); renderTarget(); };
 $('reader').addEventListener('click', (e) => {
   const el = e.target.closest('.sent'); if (!el) return;
   const i = +el.dataset.i; selSentence = selSentence === i ? -1 : i; renderReader(); renderTarget();
@@ -450,7 +479,9 @@ $('reader').addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key
 $('textSel').addEventListener('change', (e) => { state.currentId = e.target.value; selSentence = -1; saveTexts(); hideResult(); if (!$('editView').classList.contains('hidden')) openEditor(); renderAll(); });
 $('tgPy').checked = prefs.showPy; $('tgTone').checked = prefs.showTone;
 $('tgPy').addEventListener('change', (e) => { prefs.showPy = e.target.checked; savePrefs(); renderReader(); rerenderResult(); });
-$('tgTone').addEventListener('change', (e) => { prefs.showTone = e.target.checked; savePrefs(); renderReader(); });
+$('tgTone').addEventListener('change', (e) => { prefs.showTone = e.target.checked; savePrefs(); renderReader(); renderTarget(); });
+$('tgPyT').checked = prefs.showPyT;
+$('tgPyT').addEventListener('change', (e) => { prefs.showPyT = e.target.checked; savePrefs(); renderTarget(); });
 
 /* ---------- Editor ---------- */
 let pyDirty = false;
@@ -602,6 +633,15 @@ $('btnListen').onclick = () => {
 
 /* ---------- Reconocimiento ---------- */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const IS_STANDALONE = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+const diagLines = [];
+function dlog(msg) {
+  const t = new Date(); const ts = t.toTimeString().slice(0, 8) + '.' + String(t.getMilliseconds()).padStart(3, '0');
+  diagLines.push(ts + '  ' + msg); if (diagLines.length > 80) diagLines.shift();
+  const el = document.getElementById('diagLog'); if (el) el.textContent = diagLines.join('\n');
+}
+dlog(`Inicio · iOS=${IS_IOS} · app instalada=${IS_STANDALONE} · SpeechRecognition=${!!SR} · MediaRecorder=${!!window.MediaRecorder} · en línea=${navigator.onLine}`);
 function engineFor() {
   const ready = !!store.get(KEY_MODEL, null);
   if (prefs.engine === 'browser') return 'browser';
@@ -631,8 +671,8 @@ let lastAudioUrl = null;
 
 function setRecUI(st, label) {
   recState = st; const b = $('btnRec'); const lbl = b.querySelector('span');
-  b.classList.toggle('on', st === 'rec'); b.disabled = st === 'busy';
-  lbl.textContent = label || (st === 'rec' ? 'Detener y comparar' : st === 'busy' ? 'Procesando…' : 'Grabar y comparar');
+  b.classList.toggle('on', st === 'rec'); b.disabled = false;
+  lbl.textContent = label || (st === 'rec' ? 'Detener y comparar' : st === 'busy' ? 'Procesando… (toca para cancelar)' : 'Grabar y comparar');
   $('btnListen').disabled = st !== 'idle';
 }
 function showLive(placeholder) {
@@ -643,10 +683,10 @@ function showLive(placeholder) {
 
 $('btnRec').onclick = () => {
   if (recState === 'rec') { stopRecording(); return; }
-  if (recState !== 'idle') return;
+  if (recState === 'busy') { cancelAll(); return; }
   pracError(''); if (synth) synth.cancel();
   if (location.protocol === 'file:') { pracError('El micrófono no funciona abriendo el archivo directamente. Abre la app desde su dirección <b>https://</b> (GitHub Pages).'); return; }
-  const eng = engineFor();
+  const eng = engineFor(); dlog('Grabar · motor=' + eng + ' · en línea=' + navigator.onLine);
   if (eng === 'browser') {
     if (!SR) { pracError('Este navegador no tiene reconocimiento de voz (SpeechRecognition). Usa Safari o Chrome, o descarga el modelo Whisper abajo.'); return; }
     if (!navigator.onLine) { pracError('El reconocimiento del navegador necesita internet. Descarga el modelo Whisper abajo para practicar sin conexión.'); return; }
@@ -658,18 +698,32 @@ $('btnRec').onclick = () => {
   }
 };
 
+let srStarted = false, srRestarts = 0, srWatch = 0;
 function startBrowser() {
-  finalText = ''; interimText = ''; stopRequested = false;
+  finalText = ''; interimText = ''; stopRequested = false; srStarted = false; srRestarts = 0;
   try {
     recog = new SR();
-    recog.lang = 'zh-CN'; recog.interimResults = true; recog.continuous = true; recog.maxAlternatives = 1;
-  } catch (e) { pracError('No se ha podido iniciar el reconocimiento: ' + esc(String(e.message || e))); return; }
+    // En iOS el modo continuo falla a menudo: se usa una frase por grabación.
+    recog.lang = 'zh-CN'; recog.interimResults = true; recog.continuous = !IS_IOS; recog.maxAlternatives = 1;
+  } catch (e) { dlog('SR constructor error: ' + (e.message || e)); pracError('No se ha podido iniciar el reconocimiento: ' + esc(String(e.message || e))); return; }
+  const r0 = recog;
+  ['start', 'audiostart', 'soundstart', 'speechstart', 'speechend', 'audioend'].forEach((n) => r0.addEventListener(n, () => { dlog('SR ' + n); if (n === 'start' || n === 'audiostart') srStarted = true; }));
+  clearTimeout(srWatch);
+  srWatch = setTimeout(() => {
+    if (recState === 'rec' && recog === r0 && !srStarted) {
+      dlog('SR no arranca en 6 s → cancelado');
+      try { r0.abort(); } catch {}
+      recog = null; setRecUI('idle'); showLive('');
+      pracError('El reconocimiento del navegador no arranca en este dispositivo' + (IS_STANDALONE ? ' desde la app instalada' : '') + '. Prueba a abrir la página en Safari, o usa <b>Whisper (sin conexión)</b> en el apartado de abajo.');
+    }
+  }, 6000);
   recog.onresult = (ev) => {
     let interim = '';
     for (let i = ev.resultIndex; i < ev.results.length; i++) {
       const r = ev.results[i];
       if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript;
     }
+    dlog('SR result: ' + (finalText + interim).slice(-40));
     interimText = interim; showLive();
   };
   recog.onerror = (ev) => {
@@ -681,18 +735,22 @@ function startBrowser() {
       'audio-capture': 'No se encuentra el micrófono.',
       'language-not-supported': 'El reconocimiento en chino (zh-CN) no está disponible en este dispositivo.',
     }[ev.error];
+    dlog('SR error: ' + ev.error + (ev.message ? ' · ' + ev.message : ''));
     if (ev.error !== 'aborted') pracError(m || 'Error de reconocimiento: ' + esc(ev.error));
     if (ev.error !== 'no-speech') stopRequested = true;
   };
   recog.onend = () => {
-    if (!stopRequested && recState === 'rec') { try { recog.start(); return; } catch {} }
-    finishBrowser();
+    dlog('SR end · stop pedido=' + stopRequested + ' · estado=' + recState);
+    clearTimeout(srWatch);
+    if (!stopRequested && recState === 'rec' && !IS_IOS && srRestarts < 3 && r0 === recog) { srRestarts++; try { r0.start(); dlog('SR reinicio ' + srRestarts); return; } catch (e) { dlog('SR reinicio falla: ' + (e.message || e)); } }
+    recog = null; finishBrowser();
   };
-  try { recog.start(); } catch (e) { pracError('No se ha podido iniciar el micrófono: ' + esc(String(e.message || e))); return; }
+  try { recog.start(); dlog('SR start() llamado · continuo=' + recog.continuous); } catch (e) { dlog('SR start error: ' + (e.message || e)); recog = null; pracError('No se ha podido iniciar el micrófono: ' + esc(String(e.message || e))); return; }
   setRecUI('rec'); showLive('Escuchando… habla ahora.'); hideResult();
 }
 function finishBrowser() {
   if (recState === 'idle') return;
+  clearTimeout(srWatch);
   const heard = (finalText + interimText).trim(); interimText = '';
   setRecUI('idle');
   if (heard) { finalText = heard; showLive(); showResult(heard, null); }
@@ -731,8 +789,25 @@ function startMeter(stream) {
 function stopMeter() { cancelAnimationFrame(meterRAF); $('meter').style.display = 'none'; if (audioCtx) { audioCtx.close().catch(() => {}); audioCtx = null; } }
 
 function stopRecording() {
-  if (recog) { stopRequested = true; try { recog.stop(); } catch { finishBrowser(); } recog = null; setRecUI('busy', 'Terminando…'); setTimeout(() => { if (recState === 'busy') finishBrowser(); }, 2500); return; }
+  if (recog) {
+    stopRequested = true; const r0 = recog; dlog('Detener (navegador)');
+    setRecUI('busy', 'Terminando…');
+    try { r0.stop(); } catch { recog = null; finishBrowser(); return; }
+    setTimeout(() => { if (recState === 'busy' && recog === r0) { dlog('SR no termina → abort'); try { r0.abort(); } catch {} recog = null; finishBrowser(); } }, 2500);
+    return;
+  }
+  if (recState === 'rec' && !mediaRec) { setRecUI('idle'); return; }
   if (mediaRec && mediaRec.state !== 'inactive') { clearInterval(timerInt); setRecUI('busy'); mediaRec.stop(); }
+}
+function cancelAll() {
+  dlog('Cancelado por el usuario');
+  stopRequested = true;
+  if (recog) { try { recog.abort(); } catch {} recog = null; }
+  if (mediaRec && mediaRec.state !== 'inactive') { mediaRec.onstop = null; try { mediaRec.stop(); } catch {} }
+  mediaRec = null; clearInterval(timerInt); stopMeter(); stopStream();
+  if (pending) { pending.rej(new Error('cancelado')); pending = null; }
+  if (worker && workerReady === null) { worker.terminate(); worker = null; }
+  setRecUI('idle'); showLive('Cancelado.');
 }
 async function decodeTo16k(blob) {
   const ab = await blob.arrayBuffer();
@@ -751,7 +826,7 @@ async function onWhisperStop() {
   if (lastAudioUrl) URL.revokeObjectURL(lastAudioUrl); lastAudioUrl = URL.createObjectURL(blob);
   if (blob.size < 1000) { setRecUI('idle'); showLive('Grabación demasiado corta. Mantén pulsado más tiempo.'); return; }
   try {
-    showLive('Preparando audio…');
+    showLive('Preparando audio…'); dlog('Whisper: audio ' + Math.round(blob.size / 1024) + ' KB · ' + blob.type);
     const audio = await decodeTo16k(blob);
     showLive(workerReady === prefs.model ? 'Transcribiendo con Whisper…' : 'Cargando el modelo y transcribiendo… (la primera vez tarda más)');
     const res = await whisperCall({ type: 'transcribe', model: prefs.model, audio }, [audio.buffer]);
@@ -760,6 +835,8 @@ async function onWhisperStop() {
     if (res.text) showResult(res.text, lastAudioUrl, res.ms); else showLive('Whisper no ha reconocido texto. Prueba a hablar más cerca o más despacio.');
   } catch (e) {
     setRecUI('idle'); showLive('No se ha podido transcribir esta grabación.');
+    if (String(e.message) === 'cancelado') return;
+    dlog('Whisper error: ' + (e.message || e));
     pracError('Error con Whisper: ' + esc(String(e.message || e)) + (navigator.onLine ? '' : '<br>Si es la primera vez, necesitas internet para descargar el modelo.'));
   }
 }
@@ -770,6 +847,7 @@ function ensureWorker() {
   if (worker) return worker;
   worker = new Worker('./whisper-worker.js', { type: 'module' });
   worker.onmessage = ({ data }) => {
+    if (data.type !== 'progress') dlog('Worker: ' + data.type + (data.message ? ' · ' + data.message : '') + (data.ms ? ' · ' + data.ms + ' ms' : ''));
     if (data.type === 'progress') onDlProgress(data);
     else if (data.type === 'ready') { workerReady = data.model; store.set(KEY_MODEL, data.model); renderModelChip(); renderEngineLabel(); onDlDone(); if (pending && pending.kind === 'load') { pending.res(data); pending = null; } }
     else if (data.type === 'result') { if (pending && pending.kind === 'transcribe') { pending.res(data); pending = null; } }
@@ -801,6 +879,7 @@ $('btnDownload').onclick = async () => {
 function fmtMB(b) { return (b / 1048576).toFixed(b > 1e8 ? 0 : 1) + ' MB'; }
 function onDlProgress(d) {
   if (!d.total) return; const pct = Math.min(100, (d.loaded / d.total) * 100);
+  if (recState === 'busy') showLive(`Descargando el modelo Whisper (solo la primera vez): ${fmtMB(d.loaded)} de ${fmtMB(d.total)}…`);
   $('dlBar').classList.remove('hidden'); $('dlBar').firstElementChild.style.width = pct.toFixed(1) + '%';
   $('dlMsg').className = 'note info'; $('dlMsg').textContent = `Descargando modelo… ${fmtMB(d.loaded)} de ${fmtMB(d.total)}`;
 }
