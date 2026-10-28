@@ -198,7 +198,7 @@ details[open] summary::after{content:"－"}
   <!-- TEXTO -->
   <section class="card" aria-labelledby="hText">
     <h2 id="hText">Apartados</h2>
-    <div class="cats" id="cats" role="group" aria-label="Apartados"></div>
+    <select id="catSel" aria-label="Elegir apartado" style="margin-bottom:10px;font-weight:600"></select>
     <div class="row">
       <select id="textSel" class="grow" aria-label="Elegir texto"></select>
       <button class="btn icon" id="btnNew" title="Nuevo texto" aria-label="Nuevo texto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
@@ -481,14 +481,12 @@ function rubyHtml(chars, py, from, to) {
   return h;
 }
 function renderCats() {
-  const cur = current().cat;
-  $('cats').innerHTML = CATS.filter((c) => c.id === 'mis' || textsIn(c.id).length).map((c) => `<button class="cat" data-cat="${c.id}" aria-pressed="${c.id === cur}">${esc(c.name)}<small>${c.zh}</small></button>`).join('');
-  const on = $('cats').querySelector('[aria-pressed=true]'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  $('catSel').innerHTML = CATS.filter((c) => c.id === 'mis' || textsIn(c.id).length).map((c) => `<option value="${c.id}">${esc(c.name)} · ${c.zh} (${textsIn(c.id).length})</option>`).join('');
+  $('catSel').value = current().cat;
 }
-$('cats').addEventListener('click', (e) => {
-  const b = e.target.closest('.cat'); if (!b) return;
-  const list = textsIn(b.dataset.cat);
-  if (!list.length) { newText(b.dataset.cat); return; }
+$('catSel').addEventListener('change', (e) => {
+  const cat = e.target.value; const list = textsIn(cat);
+  if (!list.length) { newText(cat); return; }
   state.currentId = list[0].id; selSentence = -1; saveTexts(); hideResult();
   if (!$('editView').classList.contains('hidden')) openEditor();
   renderAll();
