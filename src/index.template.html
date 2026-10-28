@@ -105,6 +105,17 @@ rt{font-family:var(--ui);font-size:.46em;font-weight:600;letter-spacing:-.01em;c
 .reader.no-py .sent{line-height:1.8}
 .reader.no-py.tone-chars .c-t1{color:var(--t1)}.reader.no-py.tone-chars .c-t2{color:var(--t2)}.reader.no-py.tone-chars .c-t3{color:var(--t3)}.reader.no-py.tone-chars .c-t4{color:var(--t4)}.reader.no-py.tone-chars .c-t5{color:var(--t5)}
 .lat{font-family:var(--ui);font-size:.75em;color:var(--muted)}
+.cats{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 12px;margin:0 -2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:none;border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px;white-space:nowrap;min-height:40px}
+.cat small{font-family:var(--zh);color:var(--muted);margin-left:6px;font-weight:500;font-size:13px}
+.cat[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.cat[aria-pressed=true] small{color:inherit;opacity:.85}
+.es{font-family:var(--ui);font-size:15px;line-height:1.4;color:var(--muted);margin:0 0 4px}
+.target .es{font-size:16px;margin-top:2px}
+.no-es .es{display:none}
+.who{display:inline-block;font-family:var(--ui);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:3px 7px;border-radius:6px;background:var(--line);color:var(--muted);vertical-align:.45em;margin-right:8px;line-height:1.3}
+.who.me{background:var(--accent-soft);color:var(--accent)}
 
 .target{background:var(--card2);border:1px dashed var(--line);border-radius:14px;padding:12px 14px;font-family:var(--zh);font-size:26px;line-height:2.6;min-height:5.4em;max-height:60vh;overflow:auto}
 .target.no-py{line-height:1.8}
@@ -186,7 +197,8 @@ details[open] summary::after{content:"－"}
 
   <!-- TEXTO -->
   <section class="card" aria-labelledby="hText">
-    <h2 id="hText">Texto</h2>
+    <h2 id="hText">Apartados</h2>
+    <div class="cats" id="cats" role="group" aria-label="Apartados"></div>
     <div class="row">
       <select id="textSel" class="grow" aria-label="Elegir texto"></select>
       <button class="btn icon" id="btnNew" title="Nuevo texto" aria-label="Nuevo texto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
@@ -200,6 +212,7 @@ details[open] summary::after{content:"－"}
       <div class="toggles" style="margin-top:12px">
         <label class="tg"><input type="checkbox" id="tgPy" checked> Pinyin</label>
         <label class="tg"><input type="checkbox" id="tgTone" checked> Colores de tono</label>
+        <label class="tg"><input type="checkbox" id="tgEs" checked> Traducción</label>
       </div>
       <div class="legend" id="legend"><span class="t1"><b>mā</b> 1.º</span><span class="t2"><b>má</b> 2.º</span><span class="t3"><b>mǎ</b> 3.º</span><span class="t4"><b>mà</b> 4.º</span><span class="t5"><b>ma</b> neutro</span></div>
       <div class="reader" id="reader" aria-label="Texto con pinyin. Toca una frase para practicarla."></div>
@@ -207,13 +220,17 @@ details[open] summary::after{content:"－"}
     </div>
 
     <div id="editView" class="hidden">
-      <label class="lbl" for="edTitle">Título</label>
-      <input type="text" id="edTitle" maxlength="80">
+      <div class="row">
+        <div class="grow" style="flex:2 1 220px"><label class="lbl" for="edTitle">Título</label><input type="text" id="edTitle" maxlength="80"></div>
+        <div class="grow" style="flex:1 1 160px"><label class="lbl" for="edCat">Apartado</label><select id="edCat"></select></div>
+      </div>
       <label class="lbl" for="edZh">Texto en mandarín</label>
       <textarea id="edZh" class="zh" lang="zh-CN" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
       <label class="lbl" for="edPy">Pinyin (una sílaba por carácter, separadas por espacios; puedes escribir <i>ma3</i> y se convierte en <i>mǎ</i>)</label>
       <textarea id="edPy" class="py" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
       <div class="count" id="edCount"></div>
+      <label class="lbl" for="edEs">Traducción (opcional): una línea por cada línea del texto en chino. Empieza con «Tú:» o «Camarero:» para indicar quién habla. Si hay traducción, cada línea es una frase de práctica.</label>
+      <textarea id="edEs" class="py" spellcheck="true" autocomplete="off"></textarea>
       <div class="menu">
         <button class="btn primary" id="edSave">Guardar</button>
         <button class="btn" id="edCancel">Cancelar</button>
@@ -224,7 +241,7 @@ details[open] summary::after{content:"－"}
         <div class="menu">
           <button class="btn" id="btnDup">Duplicar</button>
           <button class="btn" id="btnDel">Borrar</button>
-          <button class="btn" id="btnRestore">Restaurar texto principal original</button>
+          <button class="btn" id="btnRestore">Restaurar texto original</button>
           <button class="btn" id="btnExport">Exportar textos</button>
           <label class="btn" for="fileImport">Importar textos</label>
           <input type="file" id="fileImport" accept="application/json,.json" class="hidden">
@@ -331,6 +348,7 @@ details[open] summary::after{content:"－"}
 </script>
 <script>
 /*__TEXTO_PRINCIPAL__*/
+/*__CONTENT__*/
 </script>
 <script>
 (() => {
@@ -394,23 +412,47 @@ function ensurePy(t) {
   if (!Array.isArray(t.py) || t.py.length !== chars.length) t.py = autoPy(t.zh);
   return t;
 }
+const CONTENT_VERSION = 2;
+const BASE = [Object.assign(clone(TEXTO_PRINCIPAL), { cat: 'carta' }), ...TEXTOS_BASE.map(clone), Object.assign(clone(DEFAULT_SHORT), { cat: 'mis' })];
+const BASE_BY_ID = Object.fromEntries(BASE.map((t) => [t.id, t]));
+const CAT_IDS = new Set(CATS.map((c) => c.id));
 let state = store.get(KEY_TEXTS, null);
 if (!state || !Array.isArray(state.texts) || !state.texts.length) {
-  state = { texts: [clone(TEXTO_PRINCIPAL), clone(DEFAULT_SHORT)], currentId: 'principal' };
+  state = { texts: BASE.map(clone), currentId: 'principal', contentVersion: CONTENT_VERSION };
 }
-state.texts.forEach(ensurePy);
-const prefs = Object.assign({ showPyT: true, showPy: true, showTone: true, rate: 0.8, engine: 'auto', model: 'onnx-community/whisper-base' }, store.get(KEY_PREFS, {}));
+if ((state.contentVersion || 1) < CONTENT_VERSION) {
+  // Migración: los textos que ya tenías se conservan; se añaden los apartados nuevos.
+  state.texts.forEach((t) => { if (!t.cat) t.cat = t.id === 'principal' ? 'carta' : 'mis'; });
+  for (const b of BASE) if (!state.texts.some((t) => t.id === b.id)) state.texts.push(clone(b));
+  state.contentVersion = CONTENT_VERSION;
+}
+state.texts.forEach((t) => { ensurePy(t); if (!CAT_IDS.has(t.cat)) t.cat = 'mis'; });
+const prefs = Object.assign({ showEs: true, showPyT: true, showPy: true, showTone: true, rate: 0.8, engine: 'auto', model: 'onnx-community/whisper-base' }, store.get(KEY_PREFS, {}));
 function savePrefs() { store.set(KEY_PREFS, prefs); }
 function saveTexts() { if (!store.set(KEY_TEXTS, state)) showGlobal('No se han podido guardar los textos en este dispositivo (almacenamiento bloqueado o lleno).'); }
 function current() { return state.texts.find((t) => t.id === state.currentId) || state.texts[0]; }
+function textsIn(cat) { return state.texts.filter((t) => t.cat === cat); }
+function hasLines(t) { return Array.isArray(t.es) && t.es.some((s) => s && s.trim()); }
+function splitWho(s) { const m = /^\s*([^:：]{1,20})[:：]\s*(.*)$/.exec(s || ''); return m ? [m[1].trim(), m[2]] : ['', s || '']; }
 let selSentence = -1; // -1 = texto completo
 
 function sentencesOf(t) {
   const chars = [...t.zh]; const out = []; let start = 0;
+  const byLine = hasLines(t);
+  const lineAt = (i) => chars.slice(0, i).filter((c) => c === '\n').length;
+  if (byLine) {
+    for (let i = 0; i <= chars.length; i++) {
+      if (i === chars.length || chars[i] === '\n') {
+        if (chars.slice(start, i).some((c) => HAN.test(c))) out.push({ start, end: i, line: lineAt(start) });
+        start = i + 1;
+      }
+    }
+    return out;
+  }
   for (let i = 0; i <= chars.length; i++) {
     if (i === chars.length || BREAKS.has(chars[i])) {
       const end = i === chars.length || chars[i] === '\n' ? i : i + 1;
-      if (chars.slice(start, end).some((c) => HAN.test(c))) out.push({ start, end });
+      if (chars.slice(start, end).some((c) => HAN.test(c))) out.push({ start, end, line: -1 });
       start = end; if (chars[i] === '\n') start = i + 1;
     }
   }
@@ -419,7 +461,7 @@ function sentencesOf(t) {
 function targetRange() {
   const t = current(); const s = sentencesOf(t);
   if (selSentence >= 0 && s[selSentence]) return { ...s[selSentence], n: selSentence + 1, total: s.length };
-  return { start: 0, end: [...t.zh].length, n: 0, total: s.length };
+  return { start: 0, end: [...t.zh].length, n: 0, total: s.length, line: -1 };
 }
 function targetText() { const r = targetRange(); return [...current().zh].slice(r.start, r.end).join('').replace(/\n/g, ' ').trim(); }
 
@@ -438,8 +480,26 @@ function rubyHtml(chars, py, from, to) {
   flush();
   return h;
 }
+function renderCats() {
+  const cur = current().cat;
+  $('cats').innerHTML = CATS.filter((c) => c.id === 'mis' || textsIn(c.id).length).map((c) => `<button class="cat" data-cat="${c.id}" aria-pressed="${c.id === cur}">${esc(c.name)}<small>${c.zh}</small></button>`).join('');
+  const on = $('cats').querySelector('[aria-pressed=true]'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+$('cats').addEventListener('click', (e) => {
+  const b = e.target.closest('.cat'); if (!b) return;
+  const list = textsIn(b.dataset.cat);
+  if (!list.length) { newText(b.dataset.cat); return; }
+  state.currentId = list[0].id; selSentence = -1; saveTexts(); hideResult();
+  if (!$('editView').classList.contains('hidden')) openEditor();
+  renderAll();
+});
+function lineHtml(t, s, chars, i) {
+  const es = s.line >= 0 && Array.isArray(t.es) ? t.es[s.line] || '' : '';
+  const [who, txt] = splitWho(es);
+  return (who ? `<span class="who${who === 'Tú' ? ' me' : ''}">${esc(who)}</span>` : '') + rubyHtml(chars, t.py, s.start, s.end) + (txt ? `<div class="es">${esc(txt)}</div>` : '');
+}
 function renderSelect() {
-  $('textSel').innerHTML = state.texts.map((t) => `<option value="${esc(t.id)}">${esc(t.title || 'Sin título')}</option>`).join('');
+  $('textSel').innerHTML = textsIn(current().cat).map((t) => `<option value="${esc(t.id)}">${esc(t.title || 'Sin título')}</option>`).join('');
   $('textSel').value = current().id;
 }
 function renderReader() {
@@ -449,7 +509,8 @@ function renderReader() {
   r.classList.toggle('no-tone', !prefs.showTone);
   r.classList.toggle('tone-chars', prefs.showTone);
   $('legend').classList.toggle('hidden', !prefs.showTone);
-  r.innerHTML = ss.map((s, i) => `<div class="sent${i === selSentence ? ' sel' : ''}" data-i="${i}" role="button" tabindex="0"><span class="n">${i + 1}</span>${rubyHtml(chars, t.py, s.start, s.end)}</div>`).join('') || '<p class="help">Este texto está vacío. Pulsa «Editar» para escribirlo.</p>';
+  r.classList.toggle('no-es', !prefs.showEs);
+  r.innerHTML = ss.map((s, i) => `<div class="sent${i === selSentence ? ' sel' : ''}" data-i="${i}" role="button" tabindex="0"><span class="n">${i + 1}</span>${lineHtml(t, s, chars, i)}</div>`).join('') || '<p class="help">Este texto está vacío. Pulsa «Editar» para escribirlo.</p>';
 }
 function renderTarget() {
   const t = current(); const r = targetRange(); const chars = [...t.zh];
@@ -458,12 +519,13 @@ function renderTarget() {
   tg.classList.toggle('no-py', !prefs.showPyT);
   tg.classList.toggle('no-tone', !prefs.showTone);
   tg.classList.toggle('tone-chars', prefs.showTone);
-  tg.innerHTML = rubyHtml(chars, t.py, r.start, r.end);
+  tg.classList.toggle('no-es', !prefs.showEs);
+  tg.innerHTML = r.n ? lineHtml(t, r, chars) : rubyHtml(chars, t.py, r.start, r.end);
   $('btnAll').classList.toggle('hidden', !r.n);
   $('btnPrev').disabled = r.n === 1; $('btnNext2').disabled = r.n === r.total && r.total > 0;
   $('btnNext').classList.toggle('hidden', !(r.n && r.n < r.total));
 }
-function renderAll() { renderSelect(); renderReader(); renderTarget(); }
+function renderAll() { renderCats(); renderSelect(); renderReader(); renderTarget(); }
 
 $('btnAll').onclick = () => { selSentence = -1; hideResult(); renderReader(); renderTarget(); };
 $('btnPrev').onclick = () => { const r = targetRange(); selSentence = r.n ? Math.max(0, r.n - 2) : r.total - 1; hideResult(); renderReader(); renderTarget(); };
@@ -477,6 +539,8 @@ $('textSel').addEventListener('change', (e) => { state.currentId = e.target.valu
 $('tgPy').checked = prefs.showPy; $('tgTone').checked = prefs.showTone;
 $('tgPy').addEventListener('change', (e) => { prefs.showPy = e.target.checked; savePrefs(); renderReader(); rerenderResult(); });
 $('tgTone').addEventListener('change', (e) => { prefs.showTone = e.target.checked; savePrefs(); renderReader(); renderTarget(); });
+$('tgEs').checked = prefs.showEs;
+$('tgEs').addEventListener('change', (e) => { prefs.showEs = e.target.checked; savePrefs(); renderReader(); renderTarget(); });
 $('tgPyT').checked = prefs.showPyT;
 $('tgPyT').addEventListener('change', (e) => { prefs.showPyT = e.target.checked; savePrefs(); renderTarget(); });
 
@@ -509,7 +573,9 @@ function updateCount() {
 function openEditor() {
   const t = current();
   $('edTitle').value = t.title || ''; $('edZh').value = t.zh; $('edPy').value = pyToText(t.zh, t.py); pyDirty = false; updateCount();
-  $('btnRestore').classList.toggle('hidden', t.id !== 'principal');
+  $('edCat').innerHTML = CATS.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join(''); $('edCat').value = t.cat || 'mis';
+  $('edEs').value = Array.isArray(t.es) ? t.es.join('\n') : '';
+  $('btnRestore').classList.toggle('hidden', !BASE_BY_ID[t.id]);
 }
 function setMode(edit) {
   $('readView').classList.toggle('hidden', edit); $('editView').classList.toggle('hidden', !edit);
@@ -533,27 +599,33 @@ $('edSave').onclick = () => {
   const syl = parsePy($('edPy').value); const chars = [...zh]; let k = 0;
   const t = current();
   t.zh = zh; t.py = chars.map((c) => (HAN.test(c) ? syl[k++] : null)); t.title = $('edTitle').value.trim() || 'Sin título';
+  t.cat = $('edCat').value || 'mis';
+  const esLines = $('edEs').value.replace(/\r/g, '').split('\n').map((s) => s.trim());
+  while (esLines.length && !esLines[esLines.length - 1]) esLines.pop();
+  t.es = esLines.some(Boolean) ? esLines : null;
   saveTexts(); hideGlobal(); selSentence = -1; setMode(false); hideResult(); renderAll();
 };
-$('btnNew').onclick = () => {
-  const t = ensurePy({ id: 't' + Date.now().toString(36), title: 'Texto nuevo', zh: DEFAULT_SHORT.zh, py: null });
+function newText(cat) {
+  const t = ensurePy({ id: 't' + Date.now().toString(36), cat: cat || current().cat || 'mis', title: 'Texto nuevo', zh: DEFAULT_SHORT.zh, py: null, es: null });
   state.texts.push(t); state.currentId = t.id; selSentence = -1; saveTexts(); renderAll(); setMode(true);
   setTimeout(() => { $('edZh').focus(); $('edZh').select(); }, 50);
-};
+}
+$('btnNew').onclick = () => newText();
 $('btnDup').onclick = () => { const t = clone(current()); t.id = 't' + Date.now().toString(36); t.title += ' (copia)'; state.texts.push(t); state.currentId = t.id; saveTexts(); renderAll(); openEditor(); };
 $('btnDel').onclick = () => {
   if (state.texts.length <= 1) { showGlobal('Tiene que quedar al menos un texto.'); return; }
   if (!confirm(`¿Borrar «${current().title}»?`)) return;
-  state.texts = state.texts.filter((t) => t.id !== state.currentId); state.currentId = state.texts[0].id; selSentence = -1; saveTexts(); setMode(false); renderAll();
+  const cat = current().cat; state.texts = state.texts.filter((t) => t.id !== state.currentId); state.currentId = (textsIn(cat)[0] || state.texts[0]).id; selSentence = -1; saveTexts(); setMode(false); renderAll();
 };
 $('btnRestore').onclick = () => {
-  if (!confirm('¿Restaurar el texto principal tal como venía en la app? Se perderán tus cambios en ese texto.')) return;
-  const i = state.texts.findIndex((t) => t.id === 'principal'); const fresh = clone(TEXTO_PRINCIPAL);
-  if (i >= 0) state.texts[i] = fresh; else state.texts.unshift(fresh);
-  state.currentId = 'principal'; saveTexts(); renderAll(); openEditor();
+  const id = current().id; if (!BASE_BY_ID[id]) return;
+  if (!confirm('¿Restaurar este texto tal como venía en la app? Se perderán tus cambios en él.')) return;
+  const i = state.texts.findIndex((t) => t.id === id); const fresh = clone(BASE_BY_ID[id]);
+  if (i >= 0) state.texts[i] = fresh; else state.texts.push(fresh);
+  state.currentId = id; saveTexts(); renderAll(); openEditor();
 };
 $('btnExport').onclick = () => {
-  const blob = new Blob([JSON.stringify({ app: 'awau-mandarin', version: 1, texts: state.texts }, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({ app: 'awau-mandarin', version: 2, texts: state.texts }, null, 2)], { type: 'application/json' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'textos-mandarin.json'; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 };
@@ -565,7 +637,7 @@ $('fileImport').onchange = async (e) => {
     let added = 0;
     for (const t of list) {
       if (!t || typeof t.zh !== 'string') continue;
-      const nt = ensurePy({ id: t.id || ('t' + Date.now().toString(36) + added), title: String(t.title || 'Importado'), zh: t.zh, py: t.py });
+      const nt = ensurePy({ id: t.id || ('t' + Date.now().toString(36) + added), cat: CAT_IDS.has(t.cat) ? t.cat : 'mis', title: String(t.title || 'Importado'), zh: t.zh, py: t.py, es: Array.isArray(t.es) ? t.es.map(String) : null });
       const i = state.texts.findIndex((x) => x.id === nt.id); if (i >= 0) state.texts[i] = nt; else state.texts.push(nt); added++;
     }
     saveTexts(); renderAll(); showGlobal(`Importados ${added} textos.`, true);
