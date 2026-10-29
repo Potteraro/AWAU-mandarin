@@ -19,6 +19,7 @@ const FIX = {
   '饺子':'jiǎo zi','箱子':'xiāng zi','袋子':'dài zi','只会':'zhǐ huì','巴塞罗那':'bā sài luó nà',
   '妈妈':'mā ma','骂马':'mà mǎ','骑马':'qí mǎ','十四':'shí sì','四十':'sì shí','麻':'má',
   '阿姨':'ā yí','登山包':'dēng shān bāo','好货':'hǎo huò','卖不卖':'mài bu mài','进货':'jìn huò','小伙子':'xiǎo huǒ zi','讲价':'jiǎng jià','哎呀':'āi ya','水壶':'shuǐ hú','生意':'shēng yi','苏州':'sū zhōu','只是':'zhǐ shì','脏':'zāng',
+  '比利亚弗兰卡':'bǐ lì yà fú lán kǎ','人塔':'rén tǎ','雕像':'diāo xiàng','心意':'xīn yì','送给':'sòng gěi',
   '买单':'mǎi dān','打包':'dǎ bāo','过敏':'guò mǐn','了':'le',
 };
 customPinyin(FIX);

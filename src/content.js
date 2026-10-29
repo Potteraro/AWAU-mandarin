@@ -12,6 +12,7 @@ const CATS = [
   { id: 'calle', name: 'Por la calle', zh: '在街上' },
   { id: 'transporte', name: 'Taxi y transporte', zh: '交通' },
   { id: 'compras', name: 'Compras y pagar', zh: '购物' },
+  { id: 'regalos', name: 'Regalos', zh: '礼物' },
   { id: 'mis', name: 'Mis textos', zh: '我的' },
 ];
 
@@ -75,6 +76,13 @@ const TEXTS = [
     ['', '就这个价，行吗？', 'A este precio, ¿vale?'],
     ['', '我再看看。', 'Voy a mirar un poco más.'],
     ['', '算了，我不要了。', 'Déjalo, ya no lo quiero.'],
+  ]},
+
+  // ---------- REGALOS ----------
+  { id: 'regalo-castells', cat: 'regalos', title: 'Frases clave · Regalar una figurita de castells de Vilafranca', lines: [
+    [TU, '这是我送给您的小礼物，一点小心意。', 'Es un pequeño regalo para usted, un detalle.'],
+    [TU, '这是比利亚弗兰卡人塔的小雕像。', 'Es una pequeña figura de los castells (torres humanas) de Vilafranca.'],
+    [TU, '这是加泰罗尼亚传统的人塔。', 'Es una torre humana tradicional de Cataluña.'],
   ]},
 
   // ---------- RESTAURANTE ----------

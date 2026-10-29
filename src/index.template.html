@@ -564,7 +564,7 @@ function ensurePy(t) {
   if (!Array.isArray(t.py) || t.py.length !== chars.length) t.py = autoPy(t.zh);
   return t;
 }
-const CONTENT_VERSION = 5;
+const CONTENT_VERSION = 6;
 // Textos que se sustituyen sí o sí al pasar a esa versión (aunque los hubieras editado).
 const FORCE_REPLACE = { 5: ['principal'] };
 const BASE = [Object.assign(clone(TEXTO_PRINCIPAL), { cat: 'carta' }), ...TEXTOS_BASE.map(clone), Object.assign(clone(DEFAULT_SHORT), { cat: 'mis' })];
